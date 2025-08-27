@@ -29,8 +29,8 @@ Currently it supports those at this time:
 
 Do the following tutorial from [Haxe3DS](https://github.com/NAEL2XD/Haxe3DS#installation) first, then come back here.
 
-1. Assuming you've followed the haxe3ds tutorial, open up CMD and type `(dkp-)pacman -S 3ds-dev 3ds-portlibs` and install them (the dkp- is for linux based only)
-2. Assuming you have setup the project with your haxelib created, type `haxelib git https://github.com/NAEL2XD/CitroEngine`, it should install this to your project.
+1. Assuming you've followed the haxe3ds tutorial, open up terminal and type `(dkp-)pacman -S 3ds-dev 3ds-portlibs` and install them (the dkp- is for linux based only)
+2. Assuming you have setup the project with your haxelib created, type `haxelib git https://github.com/NAEL2XD/CitroEngine` in terminal, it should install this to your project.
 3. In your `3dsSettings.json`, push `citroEngine` in `settings.libraries`.
 4. Go to the `example` folder and copy to your project so that you'll be working on them later.
 5. For the moment of truth, type `python build.py -c`, it should compile and launch it!
