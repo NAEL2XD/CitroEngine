@@ -107,7 +107,7 @@ class CitroText extends CitroObject {
         ');
     }
 
-    override function update(delta:Float) {
+    override function update(delta:Int) {
         super.update(delta);
 
         if (isDestroyed || !visible || alpha < 0) {
@@ -126,18 +126,25 @@ class CitroText extends CitroObject {
             this->width = width;
             this->height = height;
 
-            float x = this->x;
+            float newX = this->x, newY = this->y, newSW = this->scale->x, newSH = this->scale->x;
+            if (this->camera != nullptr || this->camera != NULL) {
+                newSW *= this->camera->_curZm;
+                newSH *= this->camera->_curZm;
+                newX = (newX * newSW) + this->camera->_xPtr;
+                newY = (newY * newSH) + this->camera->_yPtr;
+            }
+
             switch (this->alignment) {
                 case 0: break;
-                case 1: x += this->bottom ? (320 - this->width) / 2 : (400 - this->width) / 2; break;
-                case 2: x += this->bottom ? 320 - this->width : 400 - this->width; break;
+                case 1: newX += this->bottom ? (320 - this->width) / 2 : (400 - this->width) / 2; break;
+                case 2: newX += this->bottom ? 320 - this->width : 400 - this->width; break;
             }
 
             C2D_ViewSave(&this->matrix);
-            C2D_ViewTranslate(x, this->y);
-            C2D_ViewTranslate(this->width * this->scale->x / 2, this->height * this->scale->y / 2);
+            C2D_ViewTranslate(newX, newY);
+            C2D_ViewTranslate(this->width * newSW / 2, this->height * newSH / 2);
             C2D_ViewRotate(this->angle * M_PI / 180);
-            C2D_ViewScale(this->scale->x, this->scale->y);
+            C2D_ViewScale(newSW, newSH);
             C2D_ViewTranslate(-this->width / 2, -this->height / 2);
 
             if (this->borderStyle != 0 && this->borderSize >= 0) {
@@ -161,7 +168,7 @@ class CitroText extends CitroObject {
             }
 
             C2D_DrawText(&c2dText, C2D_WithColor, 0, 0, 0, 1, 1, applyAlpha(this->color, this->alpha));
-            C2D_ViewRestore(&this->matrix);
+            C2D_ViewRestore(&this->matrix)
         ');
     }
 

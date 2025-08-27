@@ -1,5 +1,6 @@
 package citro.state;
 
+import citro.backend.CitroCamera;
 import citro.backend.CitroTween;
 import haxe.Timer;
 import citro.backend.CitroTimer;

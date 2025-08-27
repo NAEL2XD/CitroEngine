@@ -24,6 +24,7 @@ Currently it supports those at this time:
 - Objects (Text and Sprite)
 - Tweens
 - Timers
+- Cameras (for 1.1.0)
 
 ## Installation
 

@@ -74,7 +74,7 @@ class CitroSprite extends CitroObject {
         return true;
     }
 
-    override function update(delta:Float) {
+    override function update(delta:Int) {
         super.update(delta);
 
         if (isDestroyed || !visible || alpha < 0) {
@@ -84,10 +84,18 @@ class CitroSprite extends CitroObject {
         untyped __cpp__('
             C2D_ViewSave(&this->data.matrix);
 
-            C2D_ViewTranslate(this->x, this->y);
-            C2D_ViewTranslate(this->width * this->scale->x / 2, this->height * this->scale->y / 2);
+            float newX = this->x, newY = this->y, newSW = this->scale->x, newSH = this->scale->x;
+            if (this->camera != nullptr || this->camera != NULL) {
+                newSW *= this->camera->_curZm;
+                newSH *= this->camera->_curZm;
+                newX = (newX * newSW) + this->camera->_xPtr;
+                newY = (newY * newSH) + this->camera->_yPtr;
+            }
+
+            C2D_ViewTranslate(newX * this->factor->x, newY * this->factor->y);
+            C2D_ViewTranslate(this->width * newSW / 2, this->height * newSH / 2);
             C2D_ViewRotate(this->angle * M_PI / 180);
-            C2D_ViewScale(this->scale->x, this->scale->y);
+            C2D_ViewScale(newSW / 2, newSH / 2);
             C2D_ViewTranslate(-this->width / 2, -this->height / 2);
 
             if (this->data.image.tex == NULL || this->data.image.subtex == NULL) {
@@ -97,7 +105,7 @@ class CitroSprite extends CitroObject {
                     a = (u8)(a * this->alpha);
                     finalColor = (this->color & 0x00FFFFFF) | (a << 24);
                 }
-                C2D_DrawRectSolid(0, 0, 0, this->width, this->height, finalColor);
+                C2D_DrawRectSolid(0, 0, 0, this->width * newSW, this->height * newSH, finalColor);
             } else {
                 float result = std::fabsf((static_cast<float>(this->color & 0xFFFFFF) / 16777215.f) - 1);
                 C2D_PlainImageTint(
