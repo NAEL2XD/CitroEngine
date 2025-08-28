@@ -141,7 +141,7 @@ class CitroText extends CitroObject {
             }
 
             C2D_ViewSave(&this->matrix);
-            C2D_ViewTranslate(newX, newY);
+            C2D_ViewTranslate(newX * this->factor->x, newY * this->factor->y);
             C2D_ViewTranslate(this->width * newSW / 2, this->height * newSH / 2);
             C2D_ViewRotate(this->angle * M_PI / 180);
             C2D_ViewScale(newSW, newSH);

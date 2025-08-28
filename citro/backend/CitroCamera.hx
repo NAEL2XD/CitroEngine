@@ -19,6 +19,8 @@ class CitroCamera {
     public var _xPtr(default, null):Float = 0;
     public var _yPtr(default, null):Float = 0;
     public var _curZm(default, null):Float = 1;
+    var curX:Float = 0;
+    var curY:Float = 0;
 
     /**
      * Current X (Horizontal) position for the camera.
@@ -29,9 +31,6 @@ class CitroCamera {
      * Current Y (Vertical) position for the camera.
      */
     public var y:Float = 0;
-
-    var curX:Float = 0;
-    var curY:Float = 0;
 
     /**
      * Per update lerping to update X and Y's Position.
@@ -47,9 +46,9 @@ class CitroCamera {
      * Updates the camera's position needed so that sprites can move stuff around.
      */
     public function update() {
-        curX = CitroMath.lerp(curX, x, lerp);
-        curY = CitroMath.lerp(curY, y, lerp);
         _curZm = CitroMath.lerp(_curZm, zoom, lerp);
+        curX = CitroMath.lerp(curX, x * (_curZm / 2), lerp);
+        curY = CitroMath.lerp(curY, y * (_curZm / 2), lerp);
         _xPtr = curX * _curZm;
         _yPtr = curY * _curZm;
     }

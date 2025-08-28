@@ -6,7 +6,7 @@ package citro.backend;
 #include "citro_CitroInit.h"
 ')
 
-typedef TimerMetadata = {
+private typedef TimerMetadata = {
     oldTime:Float,
     ms:Int,
     onComplete:Void->Void,
@@ -14,6 +14,9 @@ typedef TimerMetadata = {
     ranInState:Bool
 }
 
+/**
+ * Class for timer handlers and for callbacks.
+ */
 class CitroTimer {
     public static var timers:Array<TimerMetadata> = [];
 
