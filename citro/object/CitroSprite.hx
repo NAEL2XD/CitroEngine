@@ -123,7 +123,7 @@ class CitroSprite extends CitroObject {
                 C2D_DrawImageAt(this->data.image, 0, 0, 0, &this->data.tint, 1, 1);
             }
 
-            C2D_ViewRestore(&this->data.matrix);
+            C2D_ViewRestore(&this->data.matrix)
         ');
     }
 
