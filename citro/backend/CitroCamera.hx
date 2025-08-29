@@ -49,7 +49,7 @@ class CitroCamera {
         _curZm = CitroMath.lerp(_curZm, zoom, lerp);
         curX = CitroMath.lerp(curX, x, lerp);
         curY = CitroMath.lerp(curY, y, lerp);
-        _xPtr = curX * _curZm;
-        _yPtr = curY * _curZm;
+        _xPtr = curX - (200 * _curZm);
+        _yPtr = curY - (120 * _curZm);
     }
 }

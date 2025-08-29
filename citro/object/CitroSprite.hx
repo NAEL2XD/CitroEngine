@@ -82,22 +82,19 @@ class CitroSprite extends CitroObject {
         }
 
         untyped __cpp__('
-            int camP = 1;
-
             float newX = this->x, newY = this->y, newSW = this->scale->x, newSH = this->scale->x;
             if (this->camera != nullptr || this->camera != NULL) {
                 newSW *= this->camera->_curZm;
                 newSH *= this->camera->_curZm;
                 newX = (newX * newSW) + this->camera->_xPtr;
                 newY = (newY * newSH) + this->camera->_yPtr;
-                camP++;
             }
 
             C2D_ViewSave(&this->data.matrix);
             C2D_ViewTranslate(newX * this->factor->x, newY * this->factor->y);
             C2D_ViewTranslate(this->width * newSW / 2, this->height * newSH / 2);
             C2D_ViewRotate(this->angle * M_PI / 180);
-            C2D_ViewScale(newSW / camP, newSH / camP);
+            C2D_ViewScale(newSW, newSH);
             C2D_ViewTranslate(-this->width / 2, -this->height / 2);
 
             if (this->data.image.tex == NULL || this->data.image.subtex == NULL) {
