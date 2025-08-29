@@ -51,7 +51,7 @@ class CitroCamera {
     }
 
     /**
-     * Updates the camera's position needed so that members can move stuff around in camera.
+     * Updates the camera's position needed so that members can move stuff and draw around in camera.
      * @param delta Delta time in CitroState's delta arg.
      */
     public function update(delta:Int) {

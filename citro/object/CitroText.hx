@@ -126,7 +126,7 @@ class CitroText extends CitroObject {
             this->width = width;
             this->height = height;
 
-            float newX = this->x, sw = this->scale->x, sh = this->scale->x;
+            float newX = this->x, sw = this->scale->x, sh = this->scale->y;
             switch (this->alignment) {
                 case 0: break;
                 case 1: newX += this->bottom ? (320 - this->width) / 2 : (400 - this->width) / 2; break;

@@ -53,4 +53,17 @@ class CitroMath {
 		var dy:Float = SpriteA.y - SpriteB.y;
 		return Std.int(Math.sqrt(dx * dx + dy * dy));
 	}
+
+	/**
+	 * Converts an array of float to the exact total in float, Example would be if the array is `[5, 8, 3]`, it would return as 16, because 5 + 8 + 3 == 16.
+	 * @param array The array to addition as.
+	 * @return Totalled array addition as a float.
+	 */
+	public static function arrayAddition(array:Array<Float>):Float {
+		var fl:Float = 0;
+		for (num in array) {
+			fl += num;
+		}
+		return fl;
+	}
 }

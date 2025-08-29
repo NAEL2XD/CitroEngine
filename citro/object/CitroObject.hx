@@ -1,6 +1,5 @@
 package citro.object;
 
-import citro.backend.CitroCamera;
 import cxx.num.UInt32;
 
 enum Axes {

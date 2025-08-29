@@ -82,7 +82,7 @@ class CitroSprite extends CitroObject {
         }
 
         untyped __cpp__('
-            float sw = this->scale->x, sh = this->scale->x;
+            float sw = this->scale->x, sh = this->scale->y;
 
             C2D_ViewSave(&this->data.matrix);
             C2D_ViewTranslate(this->x * this->factor->x, this->y * this->factor->y);
