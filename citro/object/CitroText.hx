@@ -126,14 +126,7 @@ class CitroText extends CitroObject {
             this->width = width;
             this->height = height;
 
-            float newX = this->x, newY = this->y, newSW = this->scale->x, newSH = this->scale->x;
-            if (this->camera != nullptr || this->camera != NULL) {
-                newSW *= this->camera->_curZm;
-                newSH *= this->camera->_curZm;
-                newX = (newX * newSW) + this->camera->_xPtr;
-                newY = (newY * newSH) + this->camera->_yPtr;
-            }
-
+            float newX = this->x, sw = this->scale->x, sh = this->scale->x;
             switch (this->alignment) {
                 case 0: break;
                 case 1: newX += this->bottom ? (320 - this->width) / 2 : (400 - this->width) / 2; break;
@@ -141,10 +134,10 @@ class CitroText extends CitroObject {
             }
 
             C2D_ViewSave(&this->matrix);
-            C2D_ViewTranslate(newX * this->factor->x, newY * this->factor->y);
-            C2D_ViewTranslate(this->width * newSW / 2, this->height * newSH / 2);
+            C2D_ViewTranslate(newX * this->factor->x, this->y * this->factor->y);
+            C2D_ViewTranslate(this->width * sw / 2, this->height * sh / 2);
             C2D_ViewRotate(this->angle * M_PI / 180);
-            C2D_ViewScale(newSW, newSH);
+            C2D_ViewScale(sw, sh);
             C2D_ViewTranslate(-this->width / 2, -this->height / 2);
 
             if (this->borderStyle != 0 && this->borderSize >= 0) {

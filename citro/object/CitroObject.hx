@@ -110,11 +110,6 @@ class CitroObject {
     public var y:Float = 0;
 
     /**
-     * Current camera object to use for this sprite.
-     */
-    public var camera:CitroCamera = null;
-
-    /**
      * The screen factor as Vector 2D, useful if using cameras.
      */
     public var factor:CitroVector2D = new CitroVector2D();
