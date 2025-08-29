@@ -56,8 +56,8 @@ class CitroCamera {
      */
     public function update(delta:Int) {
         untyped __cpp__("C2D_SceneBegin(this->bottomCam ? bottomScreen : topScreen)");
+        final scX:Float = bottomCam ? 160 : 200;
 
-        final scX:Int = bottomCam ? 160 : 200;
         _curZm = CitroMath.lerp(_curZm, zoom, lerp);
         curX = CitroMath.lerp(curX, x, lerp);
         curY = CitroMath.lerp(curY, y, lerp);
@@ -78,17 +78,16 @@ class CitroCamera {
 
             spr.scale.x *= _curZm;
             spr.scale.y *= _curZm;
-
-            spr.x = (curX - oldX) * _curZm + scX;
-            spr.y = (curY - oldY) * _curZm + 120;
-
+            spr.x = (oldX + curX - scX) * _curZm + scX;
+            spr.y = (oldY + curY - 120) * _curZm + 120;
+            
             spr.update(delta);
-
+            
             spr.x = oldX;
             spr.y = oldY;
             spr.scale.x = oldSX;
             spr.scale.y = oldSY;
-            
+
             i++;
         }
     }
