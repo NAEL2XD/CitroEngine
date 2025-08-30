@@ -10,7 +10,7 @@ import citro.math.CitroMath;
  */
 @:cppInclude("citro2d.h")
 @:cppInclude("citro_CitroInit.h")
-class CitroCamera {
+class CitroCamera extends CitroObject {
     /**
      * Don't use this.
      */
@@ -18,16 +18,6 @@ class CitroCamera {
     var curX:Float = 0;
     var curY:Float = 0;
     var bottomCam:Bool = false;
-
-    /**
-     * Current X (Horizontal) position for the camera.
-     */
-    public var x:Float = 0;
-
-    /**
-     * Current Y (Vertical) position for the camera.
-     */
-    public var y:Float = 0;
 
     /**
      * Per update lerping to update X and Y's Position.
@@ -44,14 +34,14 @@ class CitroCamera {
      * @param bottom Whetever or not the camera positions at the bottom.
      */
     public function new(bottom:Bool) {
+        super();
+
         bottomCam = bottom;
     }
 
-    /**
-     * Updates the camera's position needed so that members can move stuff and draw around in camera.
-     * @param delta Delta time in CitroState's delta arg.
-     */
-    public function update(delta:Int) {
+    override function update(delta:Int) {
+        super.update(delta);
+
         untyped __cpp__("C2D_SceneBegin(this->bottomCam ? bottomScreen : topScreen)");
         final scX:Float = bottomCam ? 160 : 200;
 
@@ -117,7 +107,9 @@ class CitroCamera {
     /**
      * Will destroy every sprite from camera and clean memory, Only call this on `override function destroy` state function.
      */
-    public function destroy() {
+    override function destroy() {
+        super.destroy();
+        
         for (member in members) {
             member.destroy();
         }

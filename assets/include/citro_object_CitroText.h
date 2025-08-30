@@ -20,6 +20,7 @@ public:
 	int alignment;
 	double borderSize;
 	uint32_t borderColor;
+	bool wordWrap;
 
 	CitroText(double xPos = 0, double yPos = 0, std::string Text = std::string(""));
 	void update(int delta) override;

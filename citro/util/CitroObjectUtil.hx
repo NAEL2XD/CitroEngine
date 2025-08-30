@@ -8,21 +8,16 @@ import citro.object.CitroObject;
  */
 class CitroObjectUtil {
     /**
-     * Tweens by fading the sprite and destroys it when done. Use this if you want to fix an exception if you're destroying the sprite while tween's active.
+     * Tweens by fading the sprite.
      * @param obj Object to fade out as.
-     * @param time Time in seconds to fade and destroy.
+     * @param time Time in seconds to fade.
      */
-    public static function fadeAndDestroy(obj:CitroObject, time:Float) {
+    public static function fade(obj:CitroObject, time:Float) {
         var objRef:CitroObject = untyped __cpp__('obj');
         
         CitroTween.tween(objRef, [{
             variableToUse: ALPHA,
             destination: 0
-        }], time, LINEAR, () -> {
-            // Crash prevention (reflaxe.cpp you're so cool for turning obj != null to true...)
-            if (untyped __cpp__('objRef != nullptr') && !objRef.isDestroyed) {
-                objRef.destroy();
-            }
-        });
+        }], time, LINEAR);
     }
 }
