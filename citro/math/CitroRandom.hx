@@ -15,7 +15,7 @@ class CitroRandom {
      * @return A Random number depending on the arguments.
      */
     public function integer(from:Int = 1, to:Int = 2147483647):Int {
-        return from + Std.random(to - from);
+        return from + Std.random(to + 1 - from);
     }
 
     /**
