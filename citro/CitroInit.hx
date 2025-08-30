@@ -27,6 +27,10 @@ extern C3D_RenderTarget* bottomScreen;
 C3D_RenderTarget* topScreen = nullptr;
 C3D_RenderTarget* bottomScreen = nullptr;
 ')
+
+/**
+ * Literally everything to set up.
+ */
 class CitroInit {
     public static var callCreate:Bool = true;
     public static var shouldQuit:Bool = false;
@@ -91,8 +95,9 @@ class CitroInit {
                 C2D_TargetClear(bottomScreen, 0xFF000000)
             ');
 
-            CitroTimer.update(deltaTime);
             CitroTween.update(deltaTime);
+            CitroTimer.update(deltaTime);
+            
             renderSprite(curState, deltaTime);
             if (!s) renderSprite(subState, deltaTime);
             (s ? curState : subState).update(deltaTime);

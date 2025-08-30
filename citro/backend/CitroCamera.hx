@@ -15,9 +15,6 @@ class CitroCamera {
      * Don't use this.
      */
     var members:Array<CitroObject> = [];
-    var _xPtr(default, null):Float = 0;
-    var _yPtr(default, null):Float = 0;
-    var _curZm(default, null):Float = 1;
     var curX:Float = 0;
     var curY:Float = 0;
     var bottomCam:Bool = false;
@@ -58,11 +55,8 @@ class CitroCamera {
         untyped __cpp__("C2D_SceneBegin(this->bottomCam ? bottomScreen : topScreen)");
         final scX:Float = bottomCam ? 160 : 200;
 
-        _curZm = CitroMath.lerp(_curZm, zoom, lerp);
         curX = CitroMath.lerp(curX, x, lerp);
         curY = CitroMath.lerp(curY, y, lerp);
-        _xPtr = curX - (scX * _curZm);
-        _yPtr = curY - (120 * _curZm);
 
         var i:Int = 0;
         for (spr in members) {
@@ -76,10 +70,10 @@ class CitroCamera {
             final oldSX:Float = spr.scale.x;
             final oldSY:Float = spr.scale.y;
 
-            spr.scale.x *= _curZm;
-            spr.scale.y *= _curZm;
-            spr.x = (oldX + curX - scX) * _curZm + scX;
-            spr.y = (oldY + curY - 120) * _curZm + 120;
+            spr.scale.x *= zoom;
+            spr.scale.y *= zoom;
+            spr.x = (oldX + curX - scX) * zoom + scX;
+            spr.y = (oldY + curY - 120) * zoom + 120;
             
             spr.update(delta);
             
@@ -90,6 +84,17 @@ class CitroCamera {
 
             i++;
         }
+    }
+
+    /**
+     * Follows the object and sets the position to the object's position.
+     * @param object Object to use and set the camera's position.
+     * @since 1.1.0
+     */
+    public function follow(object:CitroObject) {
+        final scX:Float = bottomCam ? 160 : 200;
+        x = object.x - scX + (object.width / 2);
+        y = object.y - 120 + (object.height / 2);
     }
 
     /**

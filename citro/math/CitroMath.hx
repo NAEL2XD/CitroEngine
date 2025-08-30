@@ -3,6 +3,11 @@ package citro.math;
 import citro.object.CitroObject;
 
 // 100% from haxeflixel https://github.com/HaxeFlixel/flixel/blob/dev/flixel/math/FlxMath.hx
+// maybe not.
+
+/**
+ * Math class for creating new types of numbers.
+ */
 class CitroMath {
 	/**
 	 * Round a decimal number to have reduced precision (less decimal numbers).
@@ -65,5 +70,16 @@ class CitroMath {
 			fl += num;
 		}
 		return fl;
+	}
+
+	/**
+	 * Clamps a value between bounds.
+	 * @param x The value to clamp.
+	 * @param min The lower bound.
+	 * @param max The upper bound.
+	 * @return The clamped value.
+	 */
+	public static function clamp(x:Float, min:Float = 0, max:Float = 1):Float {
+		return x > max ? max : x < min ? min : x;
 	}
 }

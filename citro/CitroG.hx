@@ -1,13 +1,12 @@
 package citro;
 
-import cxx.num.UInt32;
 import citro.backend.CitroTween;
 import citro.backend.CitroTimer;
 import citro.state.CitroState;
 import citro.math.CitroRandom;
+import citro.object.CitroObject;
 import haxe3ds.HID;
 import haxe3ds.HID.TouchPosition;
-import citro.object.CitroObject;
 
 @:cppFileCode("
 #include <3ds.h>

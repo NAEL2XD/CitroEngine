@@ -9,6 +9,7 @@ import citro.object.CitroObject;
 
 @:cppInclude("citro_CitroInit.h")
 @:cppInclude("citro2d.h")
+
 /**
  * States used for creating states and for whatever sprites to behave as.
  */

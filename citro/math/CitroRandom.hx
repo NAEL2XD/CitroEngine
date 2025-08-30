@@ -6,6 +6,8 @@ import cxx.num.UInt32;
 
 /**
  * Class that uses a randomizer by using stdlib and stuff.
+ * 
+ * Do not use this class, instead use `CitroG.random`.
  */
 class CitroRandom {
     /**

@@ -4,6 +4,9 @@ import citro.object.CitroObject;
 import citro.object.CitroSprite;
 import cxx.num.UInt32;
 
+/**
+ * Subclass for CitroState but instead creates another instance of this state.
+ */
 class CitroSubState extends CitroState {
     /**
      * Handler for opening new substates.

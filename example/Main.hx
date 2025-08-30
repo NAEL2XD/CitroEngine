@@ -1,8 +1,10 @@
 import haxe3ds.RomFS;
 import haxe3ds.GFX;
-import backend.Saving;
 import citro.CitroInit;
 
+/**
+ * This is where your code will be ran when game is compiled.
+ */
 function main() {
 	GFX.initDefault();
 	RomFS.init();
@@ -15,9 +17,10 @@ function main() {
 		Mix_Volume(-1, MIX_MAX_VOLUME)
 	');
 
-	Saving.load();
-	CitroInit.init(new states.GameState());
-	Saving.saveTheSave();
+	/**
+	 * This is also where your game state will be located.
+	 */
+	CitroInit.init(new Game());
 
 	untyped __cpp__('
 	    C3D_Fini();

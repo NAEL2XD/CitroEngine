@@ -84,6 +84,13 @@ class CitroText extends CitroObject {
     public var borderStyle:BorderStyle = NONE;
 
     /**
+     * **ALPHA**: Wrapping Method of Text
+     * 
+     * @since 1.1.0
+     */
+    public var wordWrap:Bool = false;
+
+    /**
      * Creates a new object text that can display whetever text you wanna use, or have fun with it.
      * @param xPos The X position to use.
      * @param yPos The Y position to use.
@@ -140,6 +147,11 @@ class CitroText extends CitroObject {
             C2D_ViewScale(sw, sh);
             C2D_ViewTranslate(-this->width / 2, -this->height / 2);
 
+            u32 fl = C2D_WithColor;
+            if (this->wordWrap) {
+                fl += C2D_WordWrap;
+            }
+
             if (this->borderStyle != 0 && this->borderSize >= 0) {
                 u32 bCol = applyAlpha(this->borderColor, alpha);
                 switch(this->borderStyle) {
@@ -147,20 +159,20 @@ class CitroText extends CitroObject {
                     case 1: {
                         int offsets[8][2] = {{-1, -1}, {1, -1}, {-1, 1}, {1, 1}, {1, 0}, {-1, 0}, {0, 1}, {0, -1}};
                         for (int i = 0; i < 8; i++) {
-                            C2D_DrawText(&c2dText, C2D_WithColor, (offsets[i][0] * this->borderSize), (offsets[i][1] * this->borderSize), 0, 1, 1, bCol);
+                            C2D_DrawText(&c2dText, fl, (offsets[i][0] * this->borderSize), (offsets[i][1] * this->borderSize), 0, 1, 1, bCol);
                         }
                         break;
                     }
                     case 2: {
                         for (int i = 1; i < static_cast<int>(this->borderSize + 1); i++) {
-                            C2D_DrawText(&c2dText, C2D_WithColor, -i, i, .5, 1, 1, bCol);
+                            C2D_DrawText(&c2dText, fl, -i, i, .5, 1, 1, bCol);
                         }
                         break;
                     }
                 }
             }
 
-            C2D_DrawText(&c2dText, C2D_WithColor, 0, 0, 0, 1, 1, applyAlpha(this->color, this->alpha));
+            C2D_DrawText(&c2dText, fl, 0, 0, 0, 1, 1, applyAlpha(this->color, this->alpha));
             C2D_ViewRestore(&this->matrix)
         ');
     }
