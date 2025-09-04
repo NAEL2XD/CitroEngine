@@ -103,6 +103,7 @@ class CitroInit {
             (s ? curState : subState).update(deltaTime);
 
             var t:Int = debugTexts.length-1;
+            untyped __cpp__("C2D_SceneBegin(topScreen)");
             while (t != -1) {
                 while (t >= 21) {
                     debugTexts.splice(0, 1);
