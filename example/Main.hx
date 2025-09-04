@@ -1,5 +1,5 @@
-import haxe3ds.RomFS;
-import haxe3ds.GFX;
+import haxe3ds.services.RomFS;
+import haxe3ds.services.GFX;
 import citro.CitroInit;
 
 /**

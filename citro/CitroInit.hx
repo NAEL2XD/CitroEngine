@@ -1,13 +1,13 @@
 package citro;
 
+import haxe3ds.services.HID;
+import haxe3ds.services.APT;
 import citro.backend.CitroTween;
 import citro.backend.CitroTimer;
 import citro.state.CitroSubState;
 import citro.object.CitroText;
 import haxe3ds.OS;
 import cxx.num.UInt64;
-import haxe3ds.HID;
-import haxe3ds.APT;
 import citro.state.CitroState;
 
 @:headerCode("
