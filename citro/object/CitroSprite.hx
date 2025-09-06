@@ -74,6 +74,10 @@ class CitroSprite extends CitroObject {
         return true;
     }
 
+    /**
+     * Updates and draws the sprite
+     * @param delta Delta time parsed by `CitroState`
+     */
     override function update(delta:Int) {
         super.update(delta);
 

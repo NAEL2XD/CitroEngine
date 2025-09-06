@@ -114,6 +114,10 @@ class CitroText extends CitroObject {
         ');
     }
 
+    /**
+     * Updates and draws the text.
+     * @param delta Delta time parsed by `CitroState`
+     */
     override function update(delta:Int) {
         super.update(delta);
 
