@@ -61,4 +61,16 @@ class CitroStringUtil {
 		');
 		return out;
 	}
+
+	/**
+	 * Rounds a float and converts to a string.
+	 * @param fl The float to parse as.
+	 * @param prec How much precision, more numbers means more decimals.
+	 * @return A styled floated string.
+	 */
+	public static function round(fl:Float, prec:Int = 0):String {
+	    final ret:Array<String> = Std.string(fl).split(".");
+	    if (prec == 0) return ret[0];
+		return '${ret[0]}.${ret[1].substr(0, prec)}';
+	}
 }

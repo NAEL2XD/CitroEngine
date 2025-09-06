@@ -171,7 +171,7 @@ class CitroTween {
             }
 
             if (progress >= 1) {
-                if (untyped __cpp__('spr->onComplete != NULL')) {
+                if (untyped __cpp__('spr->onComplete != NULL && spr->onComplete != nullptr')) {
                     spr.onComplete();
                 }
                 cta.splice(i, 1);

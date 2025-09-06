@@ -14,10 +14,14 @@ class CitroCamera extends CitroObject {
     /**
      * Don't use this.
      */
-    var members:Array<CitroObject> = [];
     var curX:Float = 0;
     var curY:Float = 0;
     var bottomCam:Bool = false;
+
+    /**
+     * Lists of members currently added in this Camera.
+     */
+    public var members:Array<CitroObject> = [];
 
     /**
      * Per update lerping to update X and Y's Position.
@@ -59,11 +63,13 @@ class CitroCamera extends CitroObject {
             final oldY:Float = spr.y;
             final oldSX:Float = spr.scale.x;
             final oldSY:Float = spr.scale.y;
+            final oldA:Float = spr.alpha;
 
             spr.scale.x *= zoom;
             spr.scale.y *= zoom;
             spr.x = (oldX + curX - scX) * zoom + scX;
             spr.y = (oldY + curY - 120) * zoom + 120;
+            spr.alpha *= alpha;
             
             spr.update(delta);
             
@@ -71,6 +77,7 @@ class CitroCamera extends CitroObject {
             spr.y = oldY;
             spr.scale.x = oldSX;
             spr.scale.y = oldSY;
+            spr.alpha = oldA;
 
             i++;
         }
