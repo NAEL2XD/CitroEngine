@@ -36,6 +36,7 @@ class CitroInit {
     public static var shouldQuit:Bool = false;
     public static var debugTexts:Array<CitroText> = [];
     public static var curState:CitroState;
+    public static var oldCS:CitroState;
     public static var subState:CitroSubState;
     public static var destroySS:Bool = false;
 
@@ -52,15 +53,20 @@ class CitroInit {
             i++;
         }
     }
-
+    
     /**
      * Initializes CitroEngine and brings back your games into the 3DS!
      * @param state Current state to use as.
      */
-    public static function init(state:CitroState) {
+    public static function init(state:CitroState, skipIntro:Bool = false) {
         callCreate = true;
         curState = state;
         subState = null;
+
+        if (!skipIntro) {
+            oldCS = curState;
+            curState = new citro.startup.CitroStartup();
+        }
 
         untyped __cpp__('
             C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
@@ -75,7 +81,7 @@ class CitroInit {
         
         var deltaTime:Int = 16;
         while (APT.mainLoop() && !shouldQuit) {
-            final old:UInt64 = OS.getTime();
+            final old:UInt64 = OS.time;
 
             if (destroySS) {
                 subState = null;
@@ -118,7 +124,7 @@ class CitroInit {
             }
 
             untyped __cpp__('C3D_FrameEnd(0)');
-            deltaTime = OS.getTime() - old;
+            deltaTime = OS.time - old;
         }
 
         untyped __cpp__('
