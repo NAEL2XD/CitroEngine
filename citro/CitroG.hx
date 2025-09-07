@@ -1,5 +1,6 @@
 package citro;
 
+import cxx.Auto;
 import haxe3ds.services.HID;
 import citro.backend.CitroTween;
 import citro.backend.CitroTimer;
@@ -116,11 +117,20 @@ class CitroG {
     }
 
     /**
+     * Check if a shared pointer is not null or nullptr, USEFUL to fix exceptions and always use it at risky things!
+     * @param self A shared pointer variable to check.
+     * @return `true` if it's not null, `false` if null.
+     */
+    public static function isNotNull<T>(self:T):Bool {
+        return untyped __cpp__('self != nullptr || self != NULL');
+    }
+
+    /**
      * Quits CitroInit and the other state and de-initializes other citro functions.
      */
     public static function exitGame() {
         CitroInit.shouldQuit = true;
-        if (untyped __cpp__('citro::CitroInit::subState != nullptr || citro::CitroInit::subState != NULL')) CitroInit.subState.close();
+        if (isNotNull(CitroInit.subState)) CitroInit.subState.close();
         CitroInit.curState.destroy();
     }
 }

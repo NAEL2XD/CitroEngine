@@ -25,7 +25,7 @@ class CitroObjectUtil {
             variableToUse: ALPHA,
             destination: 0
         }], time, LINEAR, () -> {
-            if (untyped __cpp__('objRef != nullptr && objRef != NULL')) {
+            if (CitroG.isNotNull(objRef)) {
                 objRef.destroy();
             }
         });

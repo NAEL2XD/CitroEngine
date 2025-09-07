@@ -72,7 +72,7 @@ class CitroState {
      * @param substate Substate to use.
      */
     public function openSubstate(substate:CitroSubState) {
-        if (untyped __cpp__("citro::CitroInit::subState != nullptr || citro::CitroInit::subState != NULL")) {
+        if (CitroG.isNotNull(CitroInit.subState)) {
             return;
         }
         

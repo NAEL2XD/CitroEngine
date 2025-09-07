@@ -101,7 +101,7 @@ class CitroTween {
      * @param onComplete Callback function for tween completion.
      */
     public static function tween(object:CitroObject, props:Array<CitroTweenProps>, duration:Float = 1, easing:CitroEase = LINEAR, onComplete:Void->Void = null) {
-        if (untyped __cpp__('onComplete == nullptr')) {
+        if (!CitroG.isNotNull(onComplete)) {
             onComplete = function() {};
         }
 
@@ -130,7 +130,7 @@ class CitroTween {
             length: duration * 1000,
             onComplete: untyped __cpp__('onComplete == nullptr') ? function() {} : onComplete,
             ease: easing,
-            isState: untyped __cpp__('citro::CitroInit::subState == nullptr || citro::CitroInit::subState == NULL')
+            isState: !CitroG.isNotNull(CitroInit.subState)
         });
     }
 
@@ -147,7 +147,7 @@ class CitroTween {
         while (i != -1) {
             var spr = cta[i];
 
-            if (spr.isState != untyped __cpp__('(citro::CitroInit::subState == nullptr || citro::CitroInit::subState == NULL)')) {
+            if (spr.isState == CitroG.isNotNull(CitroInit.subState)) {
                 i--;
                 continue;
             }
@@ -171,7 +171,7 @@ class CitroTween {
             }
 
             if (progress >= 1) {
-                if (untyped __cpp__('spr->onComplete != NULL && spr->onComplete != nullptr')) {
+                if (CitroG.isNotNull(spr.onComplete)) {
                     spr.onComplete();
                 }
                 cta.splice(i, 1);

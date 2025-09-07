@@ -1,5 +1,7 @@
 package citro.backend;
 
+import cxx.std.ios.IStream;
+
 @:headerCode('
 #include <limits>
 #include <3ds.h>
@@ -32,7 +34,7 @@ class CitroTimer {
             ms: Std.int(seconds * 1000),
             onComplete: onComplete,
             loopsLeft: loops <= 0 ? untyped __cpp__('std::numeric_limits<int>::max()') : loops,
-            ranInState: untyped __cpp__('citro::CitroInit::subState == nullptr || citro::CitroInit::subState == NULL')
+            ranInState: !CitroG.isNotNull(CitroInit.subState)
         });
     }
 
@@ -47,7 +49,7 @@ class CitroTimer {
         var i:Int = 0;
         while (i < timers.length) {
             var timer = timers[i];
-            if (timer.ranInState != untyped __cpp__('(citro::CitroInit::subState == nullptr || citro::CitroInit::subState == NULL)')) {
+            if (timer.ranInState == CitroG.isNotNull(CitroInit.subState)) {
                 i++;
                 continue;
             }

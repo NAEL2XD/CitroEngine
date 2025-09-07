@@ -82,7 +82,7 @@ class CitroInit {
                 destroySS = false;
             }
 
-            final s:Bool = untyped __cpp__('citro::CitroInit::subState == nullptr || citro::CitroInit::subState == NULL');
+            final s:Bool = !CitroG.isNotNull(subState);
             if (callCreate) {
                 (s ? curState : subState).create();
                 callCreate = false;
