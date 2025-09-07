@@ -122,7 +122,7 @@ class CitroG {
      * @return `true` if it's not null, `false` if null.
      */
     public static function isNotNull<T>(self:T):Bool {
-        return untyped __cpp__('self != nullptr || self != NULL');
+        return untyped __cpp__('self != nullptr');
     }
 
     /**
