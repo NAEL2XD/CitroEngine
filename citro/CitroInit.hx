@@ -73,7 +73,7 @@ class CitroInit {
             srand(time(NULL))
         ');
         
-        var deltaTime:Int = 0;
+        var deltaTime:Int = 16;
         while (APT.mainLoop() && !shouldQuit) {
             final old:UInt64 = OS.getTime();
 
