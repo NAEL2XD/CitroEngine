@@ -94,7 +94,7 @@ class CitroObjectUtil {
      * @param y The Y's Position to use.
      * @param w The Width for the rectangle.
      * @param h The Height for the rectangle.
-     * @param color An array of colors, if color array has 3> length then uses gradient, else uses solic color. `0: Top Left, 1: Top Right, 2: Bottom Left, 3: Bottom Right.`
+     * @param color An array of colors, if color array has 3> length then uses gradient, else uses solid color. `0: Top Left, 1: Top Right, 2: Bottom Left, 3: Bottom Right.`
      * @param drawBottom Whetever or not it should draw in the bottom screen.
      * @return `true` if length is not equal than 0
      */
@@ -113,57 +113,55 @@ class CitroObjectUtil {
             true;
         } : false;
     }
-
-    // Unused - Doesn't work for some reason.
+    
     /**
-     * Draws a either solid ellipse color or a gradient ellipse color with specified arguments.
-     * @param x The X's Position to use.
-     * @param y The Y's Position to use.
-     * @param w The Width for the rectangle.
-     * @param h The Height for the rectangle.
-     * @param color An array of colors, if color array has 3> length then uses gradient, else uses solic color.
-     * @param drawBottom Whetever or not it should draw in the bottom screen.
-     * @return `true` if length is not equal than 0
-     *
-    public static function drawEllipse(x:Float, y:Float, w:Float, h:Float, color:Array<UInt32>, drawBottom:Bool = false):Bool {
-        if (color.length == 0) {
-            return false;
-        }
-
-        while (color.length != 4) {
-            color.push(color[0]);
-        }
-
-        untyped __cpp__('
-            C2D_SceneBegin(drawBottom ? bottomScreen : topScreen);
-            C2D_DrawEllipse(x, y, 1, w, y, (*color)[0], (*color)[1], (*color)[2], (*color)[3])
-        ');
-        return true;
-    }
-
-    *
      * Draws a either solid circle color or a circle ellipse color with specified arguments.
      * @param x The X's Position to use.
      * @param y The Y's Position to use.
      * @param radius Radius of the circle.
-     * @param color An array of colors, if color array has 3> length then uses gradient, else uses solic color.
+     * @param color An array of colors, if color array has 3> length then uses gradient, else uses solid color.
      * @param drawBottom Whetever or not it should draw in the bottom screen.
      * @return `true` if length is not equal than 0
-     *
+     **/
     public static function drawCircle(x:Float, y:Float, radius:Float, color:Array<UInt32>, drawBottom:Bool = false):Bool {
         if (color.length == 0) {
             return false;
         }
-
-        while (color.length != 4) {
+        
+        while (color.length < 4) {
             color.push(color[0]);
         }
 
         untyped __cpp__('
             C2D_SceneBegin(drawBottom ? bottomScreen : topScreen);
-            C2D_DrawCircle(x, y, 1, radius, (*color)[0], (*color)[1], (*color)[2], (*color)[3])
+            C2D_DrawCircle(x, y, 1, radius, colorConvert((*color)[0]), colorConvert((*color)[1]), colorConvert((*color)[2]), colorConvert((*color)[3]))
         ');
         return true;
     }
-    */
+
+    /**
+     * Draws a either solid ellipse (circle like) color or a gradient ellipse (circle like) color with specified arguments.
+     * @param x The X's Position to use.
+     * @param y The Y's Position to use.
+     * @param w The Width for the rectangle.
+     * @param h The Height for the rectangle.
+     * @param color An array of colors, if color array has 3> length then uses gradient, else uses solid color.
+     * @param drawBottom Whetever or not it should draw in the bottom screen.
+     * @return `true` if length is not equal than 0
+     */
+    public static function drawEllipse(x:Float, y:Float, w:Float, h:Float, color:Array<UInt32>, drawBottom:Bool = false):Bool {
+        if (color.length == 0) {
+            return false;
+        }
+        
+        while (color.length < 4) {
+            color.push(color[0]);
+        }
+    
+        untyped __cpp__('
+            C2D_SceneBegin(drawBottom ? bottomScreen : topScreen);
+            C2D_DrawEllipse(x, y, 1, w, y, colorConvert((*color)[0]), colorConvert((*color)[1]), colorConvert((*color)[2]), colorConvert((*color)[3]))
+        ');
+        return true;
+    }
 }
