@@ -128,7 +128,7 @@ class CitroTween {
             props: propStates,
             elapsed: 0,
             length: duration * 1000,
-            onComplete: untyped __cpp__('onComplete == nullptr') ? function() {} : onComplete,
+            onComplete: CitroG.isNotNull(onComplete) ? onComplete : function() {},
             ease: easing,
             isState: !CitroG.isNotNull(CitroInit.subState)
         });
@@ -145,10 +145,8 @@ class CitroTween {
         }
 
         while (i != -1) {
-            var spr = cta[i];
-
+            var spr = cta[i--];
             if (spr.isState == CitroG.isNotNull(CitroInit.subState)) {
-                i--;
                 continue;
             }
 
@@ -177,7 +175,6 @@ class CitroTween {
                 cta.splice(i, 1);
             }
 
-            i--;
         }
     }
 
@@ -201,14 +198,14 @@ class CitroTween {
 		return t * t * t * (t * (t * 6 - 15) + 10);
 	}
 
-    static var B1:Float = 1 / 2.75;
-	static var B2:Float = 2 / 2.75;
-	static var B3:Float = 1.5 / 2.75;
-	static var B4:Float = 2.5 / 2.75;
-	static var B5:Float = 2.25 / 2.75;
-	static var B6:Float = 2.625 / 2.75;
-    static var ELASTIC_AMPLITUDE:Float = 1;
-	static var ELASTIC_PERIOD:Float = 0.4;
+    static final B1:Float = 1 / 2.75;
+	static final B2:Float = 2 / 2.75;
+	static final B3:Float = 1.5 / 2.75;
+	static final B4:Float = 2.5 / 2.75;
+	static final B5:Float = 2.25 / 2.75;
+	static final B6:Float = 2.625 / 2.75;
+    static final ELASTIC_AMPLITUDE:Float = 1;
+	static final ELASTIC_PERIOD:Float = 0.4;
 
     static function bounceOut(t:Float):Float {
 		if (t < B1) return 7.5625 * t * t;
