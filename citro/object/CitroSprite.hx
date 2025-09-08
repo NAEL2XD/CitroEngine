@@ -34,7 +34,7 @@ class CitroSprite extends CitroObject {
         y = yPos;
 
         untyped __cpp__('
-            this->data.ss = NULL;
+            this->data.ss = nullptr;
             this->data.image = {NULL, NULL};
             Mtx_Identity(&this->data.matrix);
             C2D_PlainImageTint(&this->data.tint, 0xFFFFFFFF, 0);
@@ -123,13 +123,13 @@ class CitroSprite extends CitroObject {
     }
 
     override function destroy() {
-        super.destroy(); 
+        super.destroy();
         
-        untyped __cpp__('
-            if (this->data.ss != NULL) {
+        if (CitroG.isNotNull(untyped __cpp__('this->data.ss'))) {
+            untyped __cpp__('
                 C2D_SpriteSheetFree(this->data.ss);
-                this->data.ss = NULL;
-            }
-        ');
+                this->data.ss = nullptr;
+            ');
+        }
     }
 }

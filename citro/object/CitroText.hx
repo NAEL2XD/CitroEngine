@@ -105,7 +105,7 @@ class CitroText extends CitroObject {
 
         untyped __cpp__('
             Mtx_Identity(&this->matrix);
-            this->defaultFont = NULL;
+            this->defaultFont = nullptr;
 
             if (g_staticBuf == NULL) {
                 fnt = C2D_FontLoadSystem(CFG_REGION_USA);
@@ -193,11 +193,8 @@ class CitroText extends CitroObject {
     override function destroy() {
         super.destroy();
 
-        untyped __cpp__('
-            if (this->defaultFont) {
-                C2D_FontFree(this->defaultFont);
-                this->defaultFont = NULL;
-            }
-        ');
+        if (CitroG.isNotNull(untyped __cpp__('this->defaultFont'))) {
+            untyped __cpp__('this->defaultFont = nullptr;');
+        }
     }
 }

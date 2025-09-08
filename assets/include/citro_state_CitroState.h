@@ -22,6 +22,7 @@ public:
     virtual void destroy();
     virtual void add(std::shared_ptr<citro::object::CitroObject> member);
     virtual void insert(int index, std::shared_ptr<citro::object::CitroObject> member);
+    virtual void remove(std::shared_ptr<citro::object::CitroObject> member);
     virtual void openSubstate(std::shared_ptr<citro::state::CitroSubState> substate);
 
     HX_COMPARISON_OPERATORS(CitroState)

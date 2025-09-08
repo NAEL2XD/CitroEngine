@@ -15,24 +15,6 @@ import citro.object.CitroObject;
 
 class CitroObjectUtil {
     /**
-     * Tweens by fading the sprite.
-     * @param obj Object to fade out as.
-     * @param time Time in seconds to fade.
-     */
-    public static function fade(obj:CitroObject, time:Float) {
-        var objRef:CitroObject = untyped __cpp__('obj');
-        
-        CitroTween.tween(objRef, [{
-            variableToUse: ALPHA,
-            destination: 0
-        }], time, LINEAR, () -> {
-            if (CitroG.isNotNull(objRef)) {
-                objRef.destroy();
-            }
-        });
-    }
-
-    /**
      * Draws a triangular gradient with arguments specified.
      * @param arrayX An array of the X's coordinate of this vertex of this triangle, must be 3 or more or it'll return false.
      * @param arrayY An array of the Y's coordinate of this vertex of this triangle, must be 3 or more or it'll return false.

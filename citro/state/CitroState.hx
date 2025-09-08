@@ -67,6 +67,22 @@ class CitroState {
     }
 
     /**
+     * Removes a sprite from member lists.
+     * @param member Member to remove from list.
+     */
+    public function remove(member:CitroObject) {
+        var i:Int = members.length-1;
+        while (i != 1) {
+            var obj:CitroObject = members[i];
+            if (obj == member) {
+                members.splice(i, 1);
+            }
+
+            i--;
+        }
+    }
+
+    /**
      * Opens a new substate and pauses this current state.
      * Note: If currently in a substate, ignore this 
      * @param substate Substate to use.
@@ -77,6 +93,6 @@ class CitroState {
         }
         
         CitroInit.subState = substate;
-        CitroInit.callCreate = true;
+        substate.create();
     }
 }

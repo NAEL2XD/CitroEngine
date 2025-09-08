@@ -20,7 +20,7 @@ class CitroStartup extends CitroState {
         logo.screenCenter();
         add(logo);
 
-        CitroTimer.start(0.55, () -> {
+        CitroTimer.start(0.3, () -> {
             CitroTween.tween(logo, [{
                 variableToUse: SCALE_X,
                 destination: 0
@@ -30,7 +30,7 @@ class CitroStartup extends CitroState {
             }, {
                 variableToUse: ALPHA,
                 destination: 0
-            }], 0.8, CUBE_IN, () -> {
+            }], 0.7, CUBE_IN, () -> {
                 CitroTimer.start(0.1, () -> {
                     CitroG.switchState(CitroInit.oldCS);
                     CitroInit.oldCS = null;

@@ -1,6 +1,6 @@
 package citro;
 
-import cxx.Auto;
+import haxe.ValueException;
 import haxe3ds.services.HID;
 import citro.backend.CitroTween;
 import citro.backend.CitroTimer;
@@ -108,16 +108,20 @@ class CitroG {
      * @param state The new state to switch.
      */
     public static function switchState(state:CitroState) {
+        if (!isNotNull(state)) {
+            throw new ValueException("Expected CitroState, instead got null.");
+        }
+
         CitroTimer.timers = [];
         CitroTween.cta = [];
 
         CitroInit.curState.destroy();
         CitroInit.curState = state;
-        CitroInit.callCreate = true;
+        CitroInit.curState.create();
     }
 
     /**
-     * Check if a shared pointer is not null or nullptr, USEFUL to fix exceptions and always use it at risky things!
+     * Check if a shared pointer is not null or nullptr, USEFUL to fix quirky 3DS luma/dev exceptions and always use it at really risky things!
      * @param self A shared pointer variable to check.
      * @return `true` if it's not null, `false` if null.
      */
@@ -132,6 +136,9 @@ class CitroG {
         CitroInit.shouldQuit = true;
         if (isNotNull(CitroInit.subState)) CitroInit.subState.close();
         CitroInit.curState.destroy();
+
+        for (map in sound.storedSounds.keys()) sound.storedSounds[map].destroy();
+        sound.storedSounds.clear();
     }
 }
 
@@ -146,11 +153,11 @@ class CitroSoundG {
     /**
      * Plays a sound fast without using CitroSound class, will automatically be stored to a map.
      * @param soundPath Sound Path found in romfs, don't include `romfs:/`.
-     * @param stopNow Should stop if sound is currently playing?
+     * @param stopNow Should stop if sound is currently playing? **OPTIONAL**: false by default.
      */
     public function play(soundPath:String, stopNow:Bool = false) {
         if (storedSounds.exists(soundPath)) {
-            storedSounds.get(soundPath).play(stopNow);
+            storedSounds[soundPath].play(stopNow);
             return;
         }
 
@@ -166,37 +173,34 @@ class CitroSoundG {
      */
     public function stop(soundPath:String) {
         if (storedSounds.exists(soundPath)) {
-            storedSounds.get(soundPath).pause();
+            storedSounds[soundPath].pause();
         }
     }
 
     /**
      * Loads a sound and stores from file, recommended because switching states won't kill the sound.
      * 
-     * Upon loading sound, it will be stored in `storedSounds`
+     * Upon loading sound, it will be stored in `storedSounds`.
      * 
      * @param soundPath Current path to sound found in `romfs:/`, don't include the prefix.
-     * @param store Whetever or not if you wanna store in `storedSounds`?
-     * @return CitroSound loaded.
+     * @return A CitroSound class loaded.
      */
     public function load(soundPath:String, store:Bool = true):CitroSound {
-        return storedSounds.exists(soundPath) ? storedSounds.get(soundPath) : {
-            var snd:CitroSound = new CitroSound(soundPath);
-            if (store) storedSounds.set(soundPath, snd);
-            snd;
-        }
+        return storedSounds.exists(soundPath) ? storedSounds[soundPath] : precache(soundPath);
     }
 
     /**
      * Precaches a sound that can be used later.
      * @param soundPath Sound path to use, do not include the `romfs:/` prefix since it does that for you.
+     * @return A `CitroSound` class, only used for `CitroG.sound.load()`.
      */
-    public function precache(soundPath:String) {
+    public function precache(soundPath:String):CitroSound {
         if (storedSounds.exists(soundPath)) {
-            return;
+            return storedSounds[soundPath];
         }
 
         var snd:CitroSound = new CitroSound(soundPath);
         storedSounds.set(soundPath, snd);
+        return snd;
     }
 }

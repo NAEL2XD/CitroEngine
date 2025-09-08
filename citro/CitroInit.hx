@@ -1,5 +1,9 @@
 package citro;
 
+import haxe.CallStack;
+import haxe.Exception;
+import haxe3ds.util.FSUtil;
+import haxe3ds.applet.Error;
 import haxe3ds.services.HID;
 import haxe3ds.services.APT;
 import citro.backend.CitroTween;
@@ -9,6 +13,8 @@ import citro.object.CitroText;
 import haxe3ds.OS;
 import cxx.num.UInt64;
 import citro.state.CitroState;
+
+using StringTools;
 
 @:headerCode("
 #include <citro2d.h>
@@ -32,7 +38,6 @@ C3D_RenderTarget* bottomScreen = nullptr;
  * Literally everything to set up.
  */
 class CitroInit {
-    public static var callCreate:Bool = true;
     public static var shouldQuit:Bool = false;
     public static var debugTexts:Array<CitroText> = [];
     public static var curState:CitroState;
@@ -57,11 +62,20 @@ class CitroInit {
     /**
      * Initializes CitroEngine and brings back your games into the 3DS!
      * @param state Current state to use as.
+     * @param precacheAllSounds Should it precache all sounds? Beware of memory leaks! **OPTIONAL**: false will leave it off to reduce memory usage!
+     * @param skipIntro Whetever or not you want to skip the Citro Intro. **OPTIONAL**: Intro will still be played anyway.
      */
-    public static function init(state:CitroState, skipIntro:Bool = false) {
-        callCreate = true;
+    public static function init(state:CitroState, precacheAllSounds:Bool = false, skipIntro:Bool = false) {
         curState = state;
         subState = null;
+
+        if (precacheAllSounds) {
+            for (files in FSUtil.readDirectory("romfs:/", true)) {
+                if (files.endsWith("ogg")) {
+                    CitroG.sound.precache(files.substr(7, -1));
+                }
+            }
+        }
 
         if (!skipIntro) {
             oldCS = curState;
@@ -78,53 +92,83 @@ class CitroInit {
 
             srand(time(NULL))
         ');
-        
-        var deltaTime:Int = 16;
-        while (APT.mainLoop() && !shouldQuit) {
-            final old:UInt64 = OS.time;
 
-            if (destroySS) {
-                subState = null;
-                destroySS = false;
+        try {
+            if (!CitroG.isNotNull(curState)) {
+                shouldQuit = true;
+    
+                var error = Error.setup(TEXT_WORD_WRAP, English);
+                error.homeButton = false;
+                Error.display(error, "Citro Engine Error (#1)\n\ncurState is null instead of an actual CitroState, this will now close this program.");
+            } else {
+                curState.create();
             }
-
-            final s:Bool = !CitroG.isNotNull(subState);
-            if (callCreate) {
-                (s ? curState : subState).create();
-                callCreate = false;
-            }
-        
-            HID.scanInput();
-            untyped __cpp__('
-                C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-                C2D_TargetClear(topScreen, 0xFF000000);
-                C2D_TargetClear(bottomScreen, 0xFF000000)
-            ');
-
-            CitroTween.update(deltaTime);
-            CitroTimer.update(deltaTime);
             
-            renderSprite(curState, deltaTime);
-            if (!s) renderSprite(subState, deltaTime);
-            (s ? curState : subState).update(deltaTime);
-
-            var t:Int = debugTexts.length-1;
-            untyped __cpp__("C2D_SceneBegin(topScreen)");
-            while (t != -1) {
-                while (t >= 21) {
-                    debugTexts.splice(0, 1);
+            var deltaTime:Int = 16;
+            while (APT.mainLoop() && !shouldQuit) {
+                final old:UInt64 = OS.time;
+    
+                if (destroySS) {
+                    subState = null;
+                    destroySS = false;
+                }
+    
+                final s:Bool = CitroG.isNotNull(subState);
+            
+                HID.scanInput();
+                untyped __cpp__('
+                    C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+                    C2D_TargetClear(topScreen, 0xFF000000);
+                    C2D_TargetClear(bottomScreen, 0xFF000000)
+                ');
+    
+                CitroTween.update(deltaTime);
+                CitroTimer.update(deltaTime);
+                
+                renderSprite(curState, deltaTime);
+                if (s) renderSprite(subState, deltaTime);
+                (s ? subState : curState).update(deltaTime);
+    
+                var t:Int = debugTexts.length-1;
+                untyped __cpp__("C2D_SceneBegin(topScreen)");
+                while (t != -1) {
+                    while (t >= 21) {
+                        debugTexts.splice(0, 1);
+                        t--;
+                    }
+    
+                    var dText:CitroText = debugTexts[t];
+                    dText.y = 4 + (11 * t);
+                    dText.update(deltaTime);
+    
                     t--;
                 }
-
-                var dText:CitroText = debugTexts[t];
-                dText.y = 4 + (11 * t);
-                dText.update(deltaTime);
-
-                t--;
+    
+                untyped __cpp__('C3D_FrameEnd(0)');
+                deltaTime = OS.time - old;
             }
+        } catch(e:Exception) {
+            // Somehow prints only the exception to this line?
+            var stack:String = '!! FATAL CITRO EXCEPTION !!\n\nCitroEngine has crashed and it\'s like your or my fault!\n\n\nCallstack:\n';
+            var stackLabelArr:Array<String> = [];
+            for(stackItem in CallStack.exceptionStack(true)) {
+				switch(stackItem) {
+					case CFunction: stackLabelArr.push("Non-Haxe (C) Function");
+					case Module(c): stackLabelArr.push('Module ${c}');
+					case FilePos(parent, file, line, col):
+						switch(parent) {
+							case Method(cla, func): stackLabelArr.push('${file.replace('.hx', '')}.$func() [line $line]');
+							case _: stackLabelArr.push('${file.replace('.hx', '')} [line $line]');
+						}
+					case LocalFunction(v): stackLabelArr.push('Local Function ${Std.string(v)}');
+					case Method(cl, m): stackLabelArr.push('${cl} - ${m}');
+				}
+			}
+            stack += stackLabelArr.join('\r\n');
 
-            untyped __cpp__('C3D_FrameEnd(0)');
-            deltaTime = OS.time - old;
+            var error:ErrorConfig = Error.setup(TEXT_WORD_WRAP, English);
+            error.homeButton = false;
+            Error.display(error, '$stack\n\nReport this to the current developer that made this Game or from Github:\nhttps://github.com/NAEL2XD/CitroEngine');
         }
 
         untyped __cpp__('
