@@ -1,8 +1,6 @@
 package citro.util;
 
 import cxx.num.UInt32;
-import citro.backend.CitroTween;
-import citro.object.CitroObject;
 
 /**
  * Cool objects utility for making new styles.

@@ -2,10 +2,10 @@ package citro.state;
 
 import citro.backend.CitroCamera;
 import citro.backend.CitroTween;
-import haxe.Timer;
 import citro.backend.CitroTimer;
 import citro.object.CitroText;
 import citro.object.CitroObject;
+import haxe.Timer;
 
 @:cppInclude("citro_CitroInit.h")
 @:cppInclude("citro2d.h")

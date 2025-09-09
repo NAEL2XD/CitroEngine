@@ -1,6 +1,5 @@
 package citro;
 
-import haxe.ValueException;
 import haxe3ds.services.HID;
 import citro.backend.CitroTween;
 import citro.backend.CitroTimer;
@@ -44,6 +43,10 @@ class CitroG {
 
     /**
      * Checks if both sprites are overlapping.
+     * 
+     * ### Warning:
+     * If one of the object is added in a camera, and one isn't in a camera but in a state, it will cause inaccuracy!
+     * 
      * @param obj1 First object to use as.
      * @param obj2 Second object to use as.
      * @return true if both are overlapping, false if not overlapping or one of the object is invisible.
@@ -61,6 +64,10 @@ class CitroG {
 
     /**
      * Checks whetever if object is being touched/held in the bottom screen.
+     * 
+     * ### Warning:
+     * If the object has a camera added instead of CitroState, it will cause inaccuracy!
+     * 
      * @param obj The object to use and check.
      * @return true if currently touching, false if not touching or not in bottom screen. Note that it always returns true if sprite's x and y is in 0 and in bottom, so i suggest you move to somewhere else.
      */
@@ -108,10 +115,6 @@ class CitroG {
      * @param state The new state to switch.
      */
     public static function switchState(state:CitroState) {
-        if (!isNotNull(state)) {
-            throw new ValueException("Expected CitroState, instead got null.");
-        }
-
         CitroTimer.timers = [];
         CitroTween.cta = [];
 
