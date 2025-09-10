@@ -18,7 +18,7 @@ using namespace std::string_literals;
 std::function<void(haxe::DynamicToString, std::optional<std::shared_ptr<haxe::PosInfos>>)> haxe::Log::trace = [](haxe::DynamicToString v, std::optional<std::shared_ptr<haxe::PosInfos>> infos = std::nullopt) mutable {
 	HCXX_STACK_METHOD("C:/Users/nael/Downloads/3DSHaxe/testsubject/.haxelib/reflaxe,cpp/git/src/haxe/Log.cross.hx"s, 25, 99, "haxe.Log"s, "trace.<unnamed>"s);
 
-	std::shared_ptr<citro::object::CitroText> text = std::make_shared<citro::object::CitroText>((double)(0), (double)(11 * citro::CitroInit::debugTexts->size()), haxe::Log::formatOutput(v, infos));
+	std::shared_ptr<citro::object::CitroText> text = std::make_shared<citro::object::CitroText>((double)(1), (double)(0), haxe::Log::formatOutput(v, infos));
 	text->scale->set(0.4, 0.4);
 	citro::CitroInit::debugTexts->push_back(text);
 };

@@ -5,6 +5,7 @@
 #include <string>
 #include "_HaxeUtils.h"
 #include "citro_object_CitroObject.h"
+#include "cxx_DynamicToString.h"
 #include <3ds.h>
 #include <citro2d.h>
 #include <citro3d.h>
@@ -15,7 +16,7 @@ class CitroText: public citro::object::CitroObject {
 public:
 	C2D_Font defaultFont;
 	C3D_Mtx matrix;
-	std::string text;
+	haxe::DynamicToString text = "";
 	int borderStyle;
 	int alignment;
 	double borderSize;

@@ -1,5 +1,6 @@
 package citro.object;
 
+import cxx.DynamicToString;
 import cxx.num.UInt32;
 
 @:headerCode('
@@ -59,8 +60,10 @@ enum abstract BorderStyle(Int) {
 class CitroText extends CitroObject {
     /**
      * The current text being displayed in screen.
+     * 
+     * **1.1.0**: Now supports other types of variables!
      */
-    public var text:String = "";
+    public var text:DynamicToString = "";
 
     /**
      * Current alignment usage.
@@ -129,7 +132,7 @@ class CitroText extends CitroObject {
             C2D_TextBufClear(g_staticBuf);
         
             C2D_Text c2dText;
-            C2D_TextFontParse(&c2dText, this->defaultFont ? this->defaultFont : fnt, g_staticBuf, this->text.c_str());
+            C2D_TextFontParse(&c2dText, this->defaultFont ? this->defaultFont : fnt, g_staticBuf, haxe::DynamicToString(this->text).c_str());
             C2D_TextOptimize(&c2dText);
         
             float width, height;

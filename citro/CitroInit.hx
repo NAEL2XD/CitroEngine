@@ -135,7 +135,7 @@ class CitroInit {
                 }
 
                 var dText:CitroText = debugTexts[t];
-                dText.y = 4 + (11 * t);
+                dText.y = 10.82 * t;
                 dText.update(deltaTime);
 
                 t--;
