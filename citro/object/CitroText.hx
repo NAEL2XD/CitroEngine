@@ -20,6 +20,19 @@ static u32 applyAlpha(u32 color, float alpha) {
     u8 b = color & 0xFF;
     
     return (a << 24) | (b << 16) | (g << 8) | r;
+}
+    
+C2D_Text citro::object::CitroText::createText() {
+    C2D_Text c2dText;
+    C2D_TextFontParse(&c2dText, this->defaultFont ? this->defaultFont : fnt, g_staticBuf, haxe::DynamicToString(this->text).c_str());
+    C2D_TextOptimize(&c2dText);
+    float width, height;
+
+    C2D_TextGetDimensions(&c2dText, this->scale->x, this->scale->y, &width, &height);
+    this->width = width;
+    this->height = height;
+
+    return c2dText;
 }')
 
 enum abstract Align(Int) {
@@ -113,6 +126,8 @@ class CitroText extends CitroObject {
                 fnt = C2D_FontLoadSystem(CFG_REGION_USA);
                 g_staticBuf = C2D_TextBufNew(4096);
             }
+
+            createText();
         ');
     }
 
@@ -123,21 +138,13 @@ class CitroText extends CitroObject {
     override function update(delta:Int) {
         super.update(delta);
 
-        if (isDestroyed || !visible || alpha < 0) {
+        if (isDestroyed || !visible || alpha < 0 || (cast text : String).length == 0) {
             return;
         }
 
         untyped __cpp__('
             C2D_TextBufClear(g_staticBuf);
-        
-            C2D_Text c2dText;
-            C2D_TextFontParse(&c2dText, this->defaultFont ? this->defaultFont : fnt, g_staticBuf, haxe::DynamicToString(this->text).c_str());
-            C2D_TextOptimize(&c2dText);
-        
-            float width, height;
-            C2D_TextGetDimensions(&c2dText, this->scale->x, this->scale->y, &width, &height);
-            this->width = width;
-            this->height = height;
+            C2D_Text c2dText = createText();
 
             float newX = this->x, sw = this->scale->x, sh = this->scale->y;
             switch (this->alignment) {
