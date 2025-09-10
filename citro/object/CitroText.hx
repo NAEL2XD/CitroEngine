@@ -56,7 +56,6 @@ enum abstract BorderStyle(Int) {
     var SHADOW;
 }
 
-@:nativeGen
 class CitroText extends CitroObject {
     /**
      * The current text being displayed in screen.
