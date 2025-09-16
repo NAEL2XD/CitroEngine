@@ -73,4 +73,14 @@ class CitroStringUtil {
 	    if (prec == 0) return ret[0];
 		return '${ret[0]}.${ret[1].substr(0, prec)}';
 	}
+
+	/**
+	 * Capitalizes the first letter of this string, Example: `text` -> `Text`.
+	 * @param text Text to capitalize.
+	 * @return A formatted capitalize text string.
+	 * @since 1.1.0
+	 */
+	public static function capitalize(text:String):String {
+		return '${text.substr(0, 1).toUpperCase()}${text.substr(1)}';
+	}
 }

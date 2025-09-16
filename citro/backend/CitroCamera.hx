@@ -17,6 +17,7 @@ class CitroCamera extends CitroObject {
     var curX:Float = 0;
     var curY:Float = 0;
     var bottomCam:Bool = false;
+    var scX:Int = 0;
 
     /**
      * Lists of members currently added in this Camera.
@@ -41,46 +42,58 @@ class CitroCamera extends CitroObject {
         super();
 
         bottomCam = bottom;
+        scX = bottom ? 160 : 200;
     }
 
-    override function update(delta:Int) {
+    override function update(delta:Int):Bool {
         super.update(delta);
 
         untyped __cpp__("C2D_SceneBegin(this->bottomCam ? bottomScreen : topScreen)");
-        final scX:Float = bottomCam ? 160 : 200;
 
         curX = CitroMath.lerp(curX, x, lerp);
         curY = CitroMath.lerp(curY, y, lerp);
 
-        var i:Int = 0;
         for (spr in members) {
             if (spr.isDestroyed) {
-                members.splice(i, 1);
+                members.remove(spr);
                 continue;
             }
 
-            final oldX:Float = spr.x;
-            final oldY:Float = spr.y;
-            final oldSX:Float = spr.scale.x;
-            final oldSY:Float = spr.scale.y;
-            final oldA:Float = spr.alpha;
-
-            spr.scale.x *= zoom;
-            spr.scale.y *= zoom;
-            spr.x = (oldX + curX - scX) * zoom + scX;
-            spr.y = (oldY + curY - 120) * zoom + 120;
-            spr.alpha *= alpha;
-            
-            spr.update(delta);
-            
-            spr.x = oldX;
-            spr.y = oldY;
-            spr.scale.x = oldSX;
-            spr.scale.y = oldSY;
-            spr.alpha = oldA;
-
-            i++;
+            render(spr, delta);
         }
+
+        return true;
+    }
+
+    /**
+     * Renders a sprite from a camera instead of from a object.
+     * @param spr Sprite to use to render as, has error handling!
+     * @param delta Delta to use (needed for sprite's update time)
+     */
+    public function render(spr:CitroObject, delta:Int) {
+        if (!CitroG.isNotNull(spr)) {
+            return;
+        }
+
+        final oldX:Float = spr.x;
+        final oldY:Float = spr.y;
+        final oldSX:Float = spr.scale.x;
+        final oldSY:Float = spr.scale.y;
+        final oldA:Float = spr.alpha;
+
+        spr.scale.x *= zoom;
+        spr.scale.y *= zoom;
+        spr.x = (oldX + curX - scX) * zoom + scX;
+        spr.y = (oldY + curY - 120) * zoom + 120;
+        spr.alpha *= alpha;
+
+        spr.update(delta);
+
+        spr.x = oldX;
+        spr.y = oldY;
+        spr.scale.x = oldSX;
+        spr.scale.y = oldSY;
+        spr.alpha = oldA;
     }
 
     /**

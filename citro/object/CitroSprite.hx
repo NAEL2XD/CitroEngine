@@ -78,11 +78,9 @@ class CitroSprite extends CitroObject {
      * Updates and draws the sprite
      * @param delta Delta time parsed by `CitroState`
      */
-    override function update(delta:Int) {
-        super.update(delta);
-
-        if (isDestroyed || !visible || alpha < 0) {
-            return;
+    override function update(delta:Int):Bool {
+        if (isDestroyed || !visible || alpha < 0 || super.update(delta)) {
+            return false;
         }
 
         untyped __cpp__('
@@ -120,6 +118,8 @@ class CitroSprite extends CitroObject {
 
             C2D_ViewRestore(&this->data.matrix)
         ');
+
+        return true;
     }
 
     override function destroy() {

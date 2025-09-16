@@ -72,12 +72,10 @@ class CitroState {
      */
     public function remove(member:CitroObject) {
         var i:Int = members.length-1;
-        while (i != 1) {
-            var obj:CitroObject = members[i];
-            if (obj == member) {
+        while (i != -1) {
+            if (members[i] == member) {
                 members.splice(i, 1);
             }
-
             i--;
         }
     }

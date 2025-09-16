@@ -120,7 +120,7 @@ class CitroObjectUtil {
     }
 
     /**
-     * Draws a either solid ellipse (circle like) color or a gradient ellipse (circle like) color with specified arguments.
+     * Draws a either solid ellipse color or a gradient ellipse color with specified arguments.
      * @param x The X's Position to use.
      * @param y The Y's Position to use.
      * @param w The Width for the rectangle.

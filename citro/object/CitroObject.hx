@@ -129,15 +129,18 @@ class CitroObject {
     public function destroy() isDestroyed = true;
 
     /**
-     * This should not be used.
+     * Updates and renders the sprite.
+     * @param delta Delta Time for the member.
+     * @return `false` if rendered does not reach capacity of `CitroInit.capacity` members, true if reached, needed to fix a bug about `svcBreak`
      */
-    public function update(delta:Int) {
+    public function update(delta:Int):Bool {
         x     += acceleration.x;
         y     += acceleration.y;
         angle += acceleration.angle;
 
         //alpha = alpha >= 1 ? 1 : alpha <= 0 ? 0 : alpha;
         //angle += angle >= 360 ? -360 : angle <= -360 ? 360 : 0;
+        return CitroInit.rendered++ > CitroInit.capacity;
     };
 
     /**

@@ -25,7 +25,7 @@ public:
 
 	C2D_Text createText();
 	CitroText(double xPos = 0, double yPos = 0, std::string Text = std::string(""));
-	void update(int delta) override;
+	bool update(int delta) override;
 	bool loadFont(std::string path);
 	void destroy() override;
 

@@ -135,11 +135,9 @@ class CitroText extends CitroObject {
      * Updates and draws the text.
      * @param delta Delta time parsed by `CitroState`
      */
-    override function update(delta:Int) {
-        super.update(delta);
-
-        if (isDestroyed || !visible || alpha < 0 || (cast text : String).length == 0) {
-            return;
+    override function update(delta:Int):Bool {
+        if (isDestroyed || !visible || alpha < 0 || (cast text : String).length == 0 || (super.update(delta) && !CitroInit.renderDebug)) {
+            return false;
         }
 
         untyped __cpp__('
@@ -188,6 +186,8 @@ class CitroText extends CitroObject {
             C2D_DrawText(&c2dText, fl, 0, 0, 0, 1, 1, applyAlpha(this->color, this->alpha));
             C2D_ViewRestore(&this->matrix)
         ');
+
+        return true;
     }
 
     /**

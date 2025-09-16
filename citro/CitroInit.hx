@@ -1,16 +1,18 @@
 package citro;
 
-import haxe3ds.util.FSUtil;
-import haxe3ds.applet.Error;
-import haxe3ds.services.HID;
-import haxe3ds.services.APT;
-import citro.backend.CitroTween;
 import citro.backend.CitroTimer;
-import citro.state.CitroSubState;
+import citro.backend.CitroTween;
 import citro.object.CitroText;
-import haxe3ds.OS;
-import cxx.num.UInt64;
+import citro.state.CitroSubState;
 import citro.state.CitroState;
+
+import haxe3ds.applet.Error;
+import haxe3ds.services.APT;
+import haxe3ds.services.HID;
+import haxe3ds.util.FSUtil;
+import haxe3ds.OS;
+
+import cxx.num.UInt64;
 
 using StringTools;
 
@@ -31,29 +33,66 @@ extern C3D_RenderTarget* bottomScreen;
 C3D_RenderTarget* topScreen = nullptr;
 C3D_RenderTarget* bottomScreen = nullptr;
 ')
-
 /**
  * Literally everything to set up.
  */
 class CitroInit {
+    /**
+     * A way to say if you want the game to quit, should not be set and instead should call `CitroG.exitGame()`
+     */
     public static var shouldQuit:Bool = false;
+
+    /**
+     * Array of debug texts which gets pushed from `trace`.
+     */
     public static var debugTexts:Array<CitroText> = [];
+
+    /**
+     * The current state actually used and running from, this is where you game behaves.
+     */
     public static var curState:CitroState;
+
+    /**
+     * Old state that's only purpose is to restore it when startup is finished.
+     */
     public static var oldCS:CitroState;
+
+    /**
+     * Current substate running, `null` means no substate running, can be checked with `CitroG.isNotNull(CitroInit.substate)`
+     */
     public static var subState:CitroSubState;
+
+    /**
+     * Should not be used, but it's used to destroy substate when called.
+     */
     public static var destroySS:Bool = false;
 
+    /**
+     * Global render count, used for capacity check.
+     */
+    public static var rendered:Int = 0;
+
+    /**
+     * The limit for the capacity (which also means how many can it render total).
+     */
+    public static var capacity(default, null):Int = 0;
+
+    /**
+     * This flips everytime it gets to the debug renders.
+     */
+    public static var renderDebug(default, null):Bool = false;
+
     static function renderSprite(state:CitroState, delta:Int) {
-        var i:Int = 0;
         for (member in state.members) {
             if (member.isDestroyed) {
-                state.members.splice(i, 1);
+                state.members.remove(member);
                 continue;
             }
 
             untyped __cpp__("C2D_SceneBegin(member->bottom ? bottomScreen : topScreen)");
-            member.update(delta);
-            i++;
+            if (member.update(delta)) { // save cpu cycles :)
+                break;
+            }
         }
     }
     
@@ -62,8 +101,10 @@ class CitroInit {
      * @param state Current state to use as.
      * @param precacheAllSounds Should it precache all sounds? Beware of memory leaks! **OPTIONAL**: `precacheAllSounds` will leave it off to reduce memory usage!
      * @param skipIntro Whetever or not you want to skip the Citro Intro. **OPTIONAL**: Intro will still be played anyway.
+     * @param capacityLimit Whetever or not you want to set the current capacity limitation. **OPTIONAL**: Will be set to 400, be aware of exceptions!
      */
-    public static function init(state:CitroState, precacheAllSounds:Bool = false, skipIntro:Bool = false) {
+    public static function init(state:CitroState, precacheAllSounds:Bool = false, skipIntro:Bool = false, capacityLimit:Int = 400) {
+        capacity = capacityLimit;
         curState = state;
         subState = null;
 
@@ -91,19 +132,18 @@ class CitroInit {
             srand(time(NULL))
         ');
 
-        if (!CitroG.isNotNull(curState)) {
+        !CitroG.isNotNull(curState) ? {
             shouldQuit = true;
 
             var error = Error.setup(TEXT_WORD_WRAP, English);
             error.homeButton = false;
             Error.display(error, "Citro Engine Error (#1)\n\ncurState is null instead of an actual CitroState, this will now close this program.");
-        } else {
-            curState.create();
-        }
+        } : curState.create();
         
         var deltaTime:Int = 16;
         while (APT.mainLoop() && !shouldQuit) {
             final old:UInt64 = OS.time;
+            rendered = 0;
 
             if (destroySS) {
                 subState = null;
@@ -126,20 +166,17 @@ class CitroInit {
             if (s) renderSprite(subState, deltaTime);
             (s ? subState : curState).update(deltaTime);
 
-            var t:Int = debugTexts.length-1;
+            // Shift first, then update!
+            renderDebug = true;
             untyped __cpp__("C2D_SceneBegin(topScreen)");
-            while (t != -1) {
-                while (t >= 21) {
-                    debugTexts.splice(0, 1);
-                    t--;
-                }
-
-                var dText:CitroText = debugTexts[t];
-                dText.y = 10.82 * t;
-                dText.update(deltaTime);
-
-                t--;
+            while (debugTexts.length > 22) {
+                debugTexts.shift();
             }
+            for (i => text in debugTexts) {
+                text.y = 10.82 * i;
+                text.update(deltaTime);
+            }
+            renderDebug = false;
 
             untyped __cpp__('C3D_FrameEnd(0)');
             deltaTime = OS.time - old;

@@ -139,13 +139,7 @@ class CitroTween {
      * @param delta Time since last frame in milliseconds.
      */
     public static function update(delta:Int) {
-        var i:Int = cta.length-1;
-        if (i == -1) {
-            return;
-        }
-
-        while (i != -1) {
-            var spr = cta[i--];
+        for (spr in cta) {
             if (spr.isState == CitroG.isNotNull(CitroInit.subState)) {
                 continue;
             }
@@ -172,9 +166,8 @@ class CitroTween {
                 if (CitroG.isNotNull(spr.onComplete)) {
                     spr.onComplete();
                 }
-                cta.splice(i, 1);
+                cta.remove(spr);
             }
-
         }
     }
 
@@ -183,10 +176,8 @@ class CitroTween {
      * @param object Object to cancel tweens.
      */
     public static function cancelTweensFrom(object:CitroObject) {
-        var i:Int = cta.length-1;
-        while (i != -1) {
-            if (cta[i].variable == object) cta.splice(i, 1);
-            i--;
+        for (s in cta) {
+            if (s.variable == object) cta.remove(s);
         }
     }
 

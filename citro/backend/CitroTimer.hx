@@ -46,28 +46,21 @@ class CitroTimer {
             return;
         }
 
-        var i:Int = 0;
-        while (i < timers.length) {
-            var timer = timers[i];
+        for (timer in timers) {
             if (timer.ranInState == CitroG.isNotNull(CitroInit.subState)) {
-                i++;
                 continue;
             }
 
-            timer.ms -= delta;
-
-            if (timer.ms <= 0) {
+            if ((timer.ms -= delta) <= 0) {
                 timer.onComplete();
                 timer.loopsLeft--;
                 timer.ms = Std.int(timer.oldTime * 1000);
 
                 if (timer.loopsLeft < 1) {
-                    timers.splice(i, 1);
+                    timers.remove(timer);
                     continue;
                 }
             }
-
-            i++;
         }
     }
 }
