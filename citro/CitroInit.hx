@@ -9,7 +9,7 @@ import citro.state.CitroState;
 import haxe3ds.applet.Error;
 import haxe3ds.services.APT;
 import haxe3ds.services.HID;
-import haxe3ds.util.FSUtil;
+import haxe3ds.stdutil.FSUtil;
 import haxe3ds.OS;
 
 import cxx.num.UInt64;
@@ -137,7 +137,8 @@ class CitroInit {
 
             var error = Error.setup(TEXT_WORD_WRAP, English);
             error.homeButton = false;
-            Error.display(error, "Citro Engine Error (#1)\n\ncurState is null instead of an actual CitroState, this will now close this program.");
+            error.text = "Citro Engine Error (#1)\n\ncurState is null instead of an actual CitroState, this will now close this program.";
+            Error.display(error);
         } : curState.create();
         
         var deltaTime:Int = 16;

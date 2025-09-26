@@ -124,7 +124,7 @@ class CitroG {
     }
 
     /**
-     * Check if a shared pointer is not null or nullptr, USEFUL to fix quirky 3DS luma/dev exceptions and always use it at really risky things!
+     * Check if a shared pointer is not nullptr, USEFUL to fix quirky 3DS luma/dev exceptions and always use it at really risky things!
      * @param self A shared pointer variable to check.
      * @return `true` if it's not null, `false` if null.
      */

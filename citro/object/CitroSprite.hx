@@ -59,12 +59,14 @@ class CitroSprite extends CitroObject {
      * @return true if successfully loaded, false if not loaded.
      */
     public function loadGraphic(file:String):Bool {
-        untyped __cpp__('file = "romfs:/" + file; this->data.ss = C2D_SpriteSheetLoad(file.c_str())');
-        if (untyped __cpp__("this->data.ss == NULL || this->data.ss == nullptr")) { 
-            return false;
-        }
-
         untyped __cpp__('
+            file = "romfs:/" + file;
+            this->data.ss = C2D_SpriteSheetLoad(file.c_str())
+
+            if (this->data.ss == NULL || this->data.ss == nullptr) {
+                return false;
+            }
+
             C2D_Image ret = C2D_SpriteSheetGetImage(this->data.ss, 0);
             this->data.image = ret;
             this->width = ret.subtex->width;

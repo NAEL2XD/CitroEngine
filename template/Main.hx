@@ -20,7 +20,7 @@ function main() {
 	/**
 	 * This is also where your game state will be located.
 	 */
-	CitroInit.init(new Game());
+	CitroInit.init(new GameState());
 
 	untyped __cpp__('
 	    C3D_Fini();

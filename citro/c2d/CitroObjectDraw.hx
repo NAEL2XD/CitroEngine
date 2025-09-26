@@ -11,7 +11,7 @@ import cxx.num.UInt32;
 #include "citro_object_CitroSprite.h"
 ')
 
-class CitroObjectUtil {
+class CitroObjectDraw {
     /**
      * Draws a triangular gradient with arguments specified.
      * @param arrayX An array of the X's coordinate of this vertex of this triangle, must be 3 or more or it'll return false.
