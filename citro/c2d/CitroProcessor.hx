@@ -22,7 +22,7 @@ class CitroProcessor {
     }
 
     /**
-     * Gets time elapsed between last C3D_FrameBegin() and C3D_FrameEnd(). 
+     * Gets time elapsed between last `C3D_FrameBegin()` and `C3D_FrameEnd()`. 
      */
     public static var processingTime(get, null):Float;
     static function get_processingTime():Float {
