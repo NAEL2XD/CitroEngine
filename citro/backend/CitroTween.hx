@@ -101,10 +101,6 @@ class CitroTween {
      * @param onComplete Callback function for tween completion.
      */
     public static function tween(object:CitroObject, props:Array<CitroTweenProps>, duration:Float = 1, easing:CitroEase = LINEAR, onComplete:Void->Void = null) {
-        if (!CitroG.isNotNull(onComplete)) {
-            onComplete = function() {};
-        }
-
         var propStates:Array<CitroTweenProps> = [];
         for (prop in props) {
             propStates.push({
@@ -128,7 +124,7 @@ class CitroTween {
             props: propStates,
             elapsed: 0,
             length: duration * 1000,
-            onComplete: CitroG.isNotNull(onComplete) ? onComplete : function() {},
+            onComplete: CitroG.isNotNull(onComplete) ? onComplete : untyped __cpp__('nullptr'),
             ease: easing,
             isState: !CitroG.isNotNull(CitroInit.subState)
         });

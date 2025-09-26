@@ -140,7 +140,7 @@ class CitroObject {
 
         //alpha = alpha >= 1 ? 1 : alpha <= 0 ? 0 : alpha;
         //angle += angle >= 360 ? -360 : angle <= -360 ? 360 : 0;
-        return CitroInit.rendered++ > CitroInit.capacity;
+        return CitroInit.rendered++ > CitroInit.capacity || isDestroyed || !visible || alpha <= 0;
     };
 
     /**

@@ -90,9 +90,7 @@ class CitroInit {
             }
 
             untyped __cpp__("C2D_SceneBegin(member->bottom ? bottomScreen : topScreen)");
-            if (member.update(delta)) { // save cpu cycles :)
-                break;
-            }
+            member.update(delta); // nvm it killed rendering :(
         }
     }
     

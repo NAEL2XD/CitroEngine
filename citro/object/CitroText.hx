@@ -23,6 +23,8 @@ static u32 applyAlpha(u32 color, float alpha) {
 }
     
 C2D_Text citro::object::CitroText::createText() {
+    C2D_TextBufClear(g_staticBuf);
+
     C2D_Text c2dText;
     C2D_TextFontParse(&c2dText, this->defaultFont ? this->defaultFont : fnt, g_staticBuf, haxe::DynamicToString(this->text).c_str());
     C2D_TextOptimize(&c2dText);
@@ -136,12 +138,11 @@ class CitroText extends CitroObject {
      * @param delta Delta time parsed by `CitroState`
      */
     override function update(delta:Int):Bool {
-        if (isDestroyed || !visible || alpha < 0 || (cast text : String).length == 0 || (super.update(delta) && !CitroInit.renderDebug)) {
+        if ((cast text : String).length == 0 || (super.update(delta) && !CitroInit.renderDebug)) {
             return false;
         }
 
         untyped __cpp__('
-            C2D_TextBufClear(g_staticBuf);
             C2D_Text c2dText = createText();
 
             float newX = this->x, sw = this->scale->x, sh = this->scale->y;

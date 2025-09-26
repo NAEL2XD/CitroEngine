@@ -61,7 +61,7 @@ class CitroSprite extends CitroObject {
     public function loadGraphic(file:String):Bool {
         untyped __cpp__('
             file = "romfs:/" + file;
-            this->data.ss = C2D_SpriteSheetLoad(file.c_str())
+            this->data.ss = C2D_SpriteSheetLoad(file.c_str());
 
             if (this->data.ss == NULL || this->data.ss == nullptr) {
                 return false;
@@ -81,7 +81,7 @@ class CitroSprite extends CitroObject {
      * @param delta Delta time parsed by `CitroState`
      */
     override function update(delta:Int):Bool {
-        if (isDestroyed || !visible || alpha < 0 || super.update(delta)) {
+        if (super.update(delta)) {
             return false;
         }
 
