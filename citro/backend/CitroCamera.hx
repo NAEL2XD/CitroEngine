@@ -1,15 +1,20 @@
 package citro.backend;
 
 import citro.object.CitroObject;
+import citro.object.CitroText;
 import citro.math.CitroMath;
 
 /**
  * A backend for camera only, useful if you wanna make a camera like view.
  * 
+ * Note: It is a object, so it must be added from this state!
+ * 
  * @since 1.1.0
  */
-@:cppInclude("citro2d.h")
-@:cppInclude("citro_CitroInit.h")
+@:cppFileCode('
+#include <citro2d.h>
+#include "citro_CitroInit.h"
+')
 class CitroCamera extends CitroObject {
     /**
      * Don't use this.
@@ -47,12 +52,11 @@ class CitroCamera extends CitroObject {
 
     override function update(delta:Int):Bool {
         super.update(delta);
-
-        untyped __cpp__("C2D_SceneBegin(this->bottomCam ? bottomScreen : topScreen)");
-
+        
         curX = CitroMath.lerp(curX, x, lerp);
         curY = CitroMath.lerp(curY, y, lerp);
-
+        
+        untyped __cpp__("C2D_SceneBegin(this->bottomCam ? bottomScreen : topScreen)");
         for (spr in members) {
             if (spr.isDestroyed) {
                 members.remove(spr);

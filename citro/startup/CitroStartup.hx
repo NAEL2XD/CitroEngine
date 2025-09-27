@@ -21,7 +21,7 @@ class CitroStartup extends CitroState {
         add(logo);
 
         CitroTimer.start(0.3, () -> {
-            CitroTween.tween(logo, [{
+            CitroTween.tweenObject(logo, [{
                 variableToUse: SCALE_X,
                 destination: 0
             }, {

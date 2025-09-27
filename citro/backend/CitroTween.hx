@@ -54,23 +54,28 @@ enum abstract CitroEase(Int) {
     var ELASTIC_INOUT;
 }
 
+enum CTTypes {
+    OBJECT;
+    VARIABLE;
+}
+
 private typedef CitroTweenProps = {
     /**
      * Common variable to use from CitroObject
      * 
      * @see enum abstract CitroEase
      */
-    variableToUse:CitroObjVar,
+    var variableToUse:CitroObjVar;
 
     /**
      * The destination for the float number to use.
      */
-    destination:Float,
+    var destination:Float;
 
     /**
      * Should not be used.
      */
-    ?oldVar:Float
+    var ?oldVar:Float;
 }
 
 private typedef CitroTweenArray = {
@@ -80,17 +85,47 @@ private typedef CitroTweenArray = {
     elapsed:Float,
     onComplete:Void->Void,
     ease:CitroEase,
-    isState:Bool
+    isState:Bool,
+    tweenType:CTTypes,
+    onUpdate:Float->Void
 }
-
-@:cppInclude("3ds.h")
-@:cppInclude("citro_CitroInit.h")
 
 /**
  * Class for doing tweens and such.
  */
+@:cppFileCode('
+#include <3ds.h>
+#include "citro_CitroInit.h"
+')
 class CitroTween {
     public static var cta:Array<CitroTweenArray> = [];
+
+    /**
+     * Creates and starts a new tween from number to number.
+     * @param from Starting number.
+     * @param to Ending number.
+     * @param onUpdate Update function that will call everytime's been called.
+     * @param duration How long in seconds do you want it to tween for?
+     * @param easing The style of easing to use as.
+     * @param onComplete Callback function for tween completion.
+     */
+    public static function tweenNumber(from:Float, to:Float, onUpdate:Float->Void, duration:Float = 1, easing:CitroEase = LINEAR, onComplete:Void->Void = null) {
+        cta.push({
+            variable: null,
+            props: [{
+                variableToUse: X,
+                destination: to,
+                oldVar: from
+            }],
+            elapsed: 0,
+            length: duration * 1000,
+            onComplete: CitroG.isNotNull(onComplete) ? onComplete : untyped __cpp__('nullptr'),
+            ease: easing,
+            isState: !CitroG.isNotNull(CitroInit.subState),
+            tweenType: VARIABLE,
+            onUpdate: onUpdate
+        });
+    }
 
     /**
      * Creates and starts a new tween from object.
@@ -100,7 +135,7 @@ class CitroTween {
      * @param easing The style of easing to use as.
      * @param onComplete Callback function for tween completion.
      */
-    public static function tween(object:CitroObject, props:Array<CitroTweenProps>, duration:Float = 1, easing:CitroEase = LINEAR, onComplete:Void->Void = null) {
+    public static function tweenObject(object:CitroObject, props:Array<CitroTweenProps>, duration:Float = 1, easing:CitroEase = LINEAR, onComplete:Void->Void = null) {
         var propStates:Array<CitroTweenProps> = [];
         for (prop in props) {
             propStates.push({
@@ -126,7 +161,9 @@ class CitroTween {
             length: duration * 1000,
             onComplete: CitroG.isNotNull(onComplete) ? onComplete : untyped __cpp__('nullptr'),
             ease: easing,
-            isState: !CitroG.isNotNull(CitroInit.subState)
+            isState: !CitroG.isNotNull(CitroInit.subState),
+            tweenType: OBJECT,
+            onUpdate: untyped __cpp__('nullptr')
         });
     }
 
@@ -144,17 +181,23 @@ class CitroTween {
             var progress:Float = spr.elapsed / spr.length;
             if (progress > 1) progress = 1;
 
+            var useVar:Float = 0;
             for (prop in spr.props) {
                 final res:Float = CitroMath.lerp(prop.oldVar, prop.destination, applyEase(spr.ease, progress));
-                switch(prop.variableToUse) {
-                    case ALPHA: spr.variable.alpha = res;
-                    case ANGLE: spr.variable.angle = res;
-                    case HEIGHT: spr.variable.height = res;
-                    case SCALE_X: spr.variable.scale.x = res;
-                    case SCALE_Y: spr.variable.scale.y = res;
-                    case WIDTH: spr.variable.width = res;
-                    case X: spr.variable.x = res;
-                    case Y: spr.variable.y = res;
+                if (spr.tweenType == OBJECT) {
+                    switch(prop.variableToUse) {
+                        case ALPHA: spr.variable.alpha = res;
+                        case ANGLE: spr.variable.angle = res;
+                        case HEIGHT: spr.variable.height = res;
+                        case SCALE_X: spr.variable.scale.x = res;
+                        case SCALE_Y: spr.variable.scale.y = res;
+                        case WIDTH: spr.variable.width = res;
+                        case X: spr.variable.x = res;
+                        case Y: spr.variable.y = res;
+                    }
+                } else if (spr.tweenType == VARIABLE) {
+                    useVar = res;
+                    break;
                 }
             }
 
@@ -163,6 +206,10 @@ class CitroTween {
                     spr.onComplete();
                 }
                 cta.remove(spr);
+            }
+            
+            if (CitroG.isNotNull(spr.onUpdate)) {
+                spr.onUpdate(useVar);
             }
         }
     }

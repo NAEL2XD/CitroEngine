@@ -89,6 +89,10 @@ class CitroInit {
                 continue;
             }
 
+            if (rendered > capacity) {
+                break;
+            }
+
             untyped __cpp__("C2D_SceneBegin(member->bottom ? bottomScreen : topScreen)");
             member.update(delta); // nvm it killed rendering :(
         }
@@ -99,7 +103,7 @@ class CitroInit {
      * @param state Current state to use as.
      * @param precacheAllSounds Should it precache all sounds? Beware of memory leaks! **OPTIONAL**: `precacheAllSounds` will leave it off to reduce memory usage!
      * @param skipIntro Whetever or not you want to skip the Citro Intro. **OPTIONAL**: Intro will still be played anyway.
-     * @param capacityLimit Whetever or not you want to set the current capacity limitation. **OPTIONAL**: Will be set to 400, be aware of exceptions!
+     * @param capacityLimit Whetever or not you want to set the current capacity limitation. **OPTIONAL**: Will be set to 400, be aware of exceptions if going higher!
      */
     public static function init(state:CitroState, precacheAllSounds:Bool = false, skipIntro:Bool = false, capacityLimit:Int = 400) {
         capacity = capacityLimit;
@@ -109,7 +113,7 @@ class CitroInit {
         if (precacheAllSounds) {
             for (files in FSUtil.readDirectory("romfs:/", true)) {
                 if (files.endsWith("ogg")) {
-                    CitroG.sound.precache(files.substr(7, -1));
+                    CitroG.sound.precache(files.substr(7));
                 }
             }
         }
@@ -141,6 +145,7 @@ class CitroInit {
         
         var deltaTime:Int = 16;
         while (APT.mainLoop() && !shouldQuit) {
+            HID.scanInput();
             final old:UInt64 = OS.time;
             rendered = 0;
 
@@ -149,18 +154,16 @@ class CitroInit {
                 destroySS = false;
             }
 
-            final s:Bool = CitroG.isNotNull(subState);
-        
-            HID.scanInput();
             untyped __cpp__('
                 C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
                 C2D_TargetClear(topScreen, 0xFF000000);
                 C2D_TargetClear(bottomScreen, 0xFF000000)
             ');
-
+            
             CitroTween.update(deltaTime);
             CitroTimer.update(deltaTime);
             
+            final s:Bool = CitroG.isNotNull(subState);
             renderSprite(curState, deltaTime);
             if (s) renderSprite(subState, deltaTime);
             (s ? subState : curState).update(deltaTime);

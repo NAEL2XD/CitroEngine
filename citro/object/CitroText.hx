@@ -12,6 +12,7 @@ import cxx.num.UInt32;
 @:cppFileCode('
 static C2D_Font fnt = NULL;
 static C2D_TextBuf g_staticBuf = NULL;
+int offsets[8][2] = {{-1, -1}, {1, -1}, {-1, 1}, {1, 1}, {1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
 static u32 applyAlpha(u32 color, float alpha) {
     u8 a = static_cast<u8>(((color >> 24) & 0xFF) * alpha);
@@ -28,8 +29,8 @@ C2D_Text citro::object::CitroText::createText() {
     C2D_Text c2dText;
     C2D_TextFontParse(&c2dText, this->defaultFont ? this->defaultFont : fnt, g_staticBuf, haxe::DynamicToString(this->text).c_str());
     C2D_TextOptimize(&c2dText);
+    
     float width, height;
-
     C2D_TextGetDimensions(&c2dText, this->scale->x, this->scale->y, &width, &height);
     this->width = width;
     this->height = height;
@@ -81,6 +82,9 @@ class CitroText extends CitroObject {
 
     /**
      * Current alignment usage.
+     * 
+     * ### Warning:
+     * If added to camera and not in state, it will mess up! Leave it as `LEFT`.
      */
     public var alignment:Align = LEFT;
 
@@ -169,7 +173,6 @@ class CitroText extends CitroObject {
                 switch(this->borderStyle) {
                     case 0: break;
                     case 1: {
-                        int offsets[8][2] = {{-1, -1}, {1, -1}, {-1, 1}, {1, 1}, {1, 0}, {-1, 0}, {0, 1}, {0, -1}};
                         for (int i = 0; i < 8; i++) {
                             C2D_DrawText(&c2dText, fl, (offsets[i][0] * this->borderSize), (offsets[i][1] * this->borderSize), 0, 1, 1, bCol);
                         }

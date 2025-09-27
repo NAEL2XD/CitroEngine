@@ -2,6 +2,13 @@ package citro;
 
 import cxx.num.UInt64;
 
+/**
+ * Sound class that uses SDL's Mixer to play sounds and not ivorbisfile.
+ * 
+ * Note: If creating a new big sound, it will take ~15 seconds to initialize!
+ * 
+ * @since 1.0.0
+ */
 @:headerCode('
 #include <SDL.h>
 #include <SDL_mixer.h>
@@ -15,19 +22,11 @@ import cxx.num.UInt64;
     u64 oldTime;
     u64 oldPauseTime;
 ')
-
-/**
- * Sound class that uses SDL's Mixer to play sounds and not ivorbisfile.
- * 
- * Note: If creating a new big sound, it will take ~15 seconds to initialize!
- * 
- * @since 1.0.0
- */
 class CitroSound {
     /**
      * Current length of this sound.
      */
-    public var length(default, null):Int;
+    public var length(default, null):Int = 0;
 
     /**
      * Current file path read.
@@ -41,6 +40,8 @@ class CitroSound {
 
     /**
      * Current time in progress in U64.
+     * 
+     * Note: This calculation is weird.
      */
     public var time(get, null):UInt64;
     function get_time():UInt64 {
@@ -65,9 +66,7 @@ class CitroSound {
      */
     public function new(file:String) {
         untyped __cpp__('
-            this->mixer = nullptr;
             this->canPlay = false;
-            this->length = 0;
 
             char path[256];
             snprintf(path, sizeof(path), "romfs:/%s", file.c_str());
