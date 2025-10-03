@@ -140,9 +140,13 @@ class CitroG {
         if (isNotNull(CitroInit.subState)) CitroInit.subState.close();
         CitroInit.curState.destroy();
 
-        for (map in sound.storedSounds.keys()) sound.storedSounds[map].destroy();
-        sound.storedSounds.clear();
+        for (map in sound.storedSounds) map.value.destroy();
+        sound.storedSounds = [];
     }
+}
+
+private typedef CitroGarbageMap = {
+    key:String, value:CitroSound
 }
 
 class CitroSoundG {
@@ -151,21 +155,32 @@ class CitroSoundG {
     /**
      * Current storage for sounds running from fastPlaySound
      */
-    public var storedSounds:Map<String, CitroSound> = [];
+    public var storedSounds:Array<CitroGarbageMap> = [];
+
+    function sortByKey(soundPath:String):Int {
+        for (ind => i in storedSounds) {
+            if (i.key == soundPath) {
+                return ind;
+            }
+        }
+
+        return -1;
+    }
 
     /**
-     * Plays a sound fast without using CitroSound class, will automatically be stored to a map.
+     * Plays a sound fast without using CitroSound class, will automatically be stored to an array.
      * @param soundPath Sound Path found in romfs, don't include `romfs:/`.
      * @param stopNow Should stop if sound is currently playing? **OPTIONAL**: false by default.
      */
     public function play(soundPath:String, stopNow:Bool = false) {
-        if (storedSounds.exists(soundPath)) {
-            storedSounds[soundPath].play(stopNow);
+        var i = sortByKey(soundPath);
+        if (i != -1) {
+            storedSounds[i].value.play(stopNow);
             return;
         }
 
         var snd:CitroSound = new CitroSound(soundPath);
-        storedSounds.set(soundPath, snd);
+        storedSounds.push({key:soundPath, value:snd});
         snd.play();
     }
 
@@ -175,8 +190,9 @@ class CitroSoundG {
      * Will do nothing if it doesn't exist.
      */
     public function stop(soundPath:String) {
-        if (storedSounds.exists(soundPath)) {
-            storedSounds[soundPath].pause();
+        var i = sortByKey(soundPath);
+        if (i != -1) {
+            storedSounds[i].value.pause();
         }
     }
 
@@ -189,7 +205,8 @@ class CitroSoundG {
      * @return A CitroSound class loaded.
      */
     public function load(soundPath:String, store:Bool = true):CitroSound {
-        return storedSounds.exists(soundPath) ? storedSounds[soundPath] : precache(soundPath);
+        var i = sortByKey(soundPath);
+        return i != -1 ? storedSounds[i].value : precache(soundPath);
     }
 
     /**
@@ -198,12 +215,13 @@ class CitroSoundG {
      * @return A `CitroSound` class, only used for `CitroG.sound.load()`.
      */
     public function precache(soundPath:String):CitroSound {
-        if (storedSounds.exists(soundPath)) {
-            return storedSounds[soundPath];
+        var i = sortByKey(soundPath);
+        if (i != -1) {
+            return storedSounds[i].value;
         }
 
         var snd:CitroSound = new CitroSound(soundPath);
-        storedSounds.set(soundPath, snd);
+        storedSounds.push({key:soundPath, value:snd});
         return snd;
     }
 }

@@ -29,9 +29,11 @@ C2D_Text citro::object::CitroText::createText() {
     C2D_Text c2dText;
     C2D_TextFontParse(&c2dText, this->defaultFont ? this->defaultFont : fnt, g_staticBuf, haxe::DynamicToString(this->text).c_str());
     C2D_TextOptimize(&c2dText);
+
+    bool cam = this->_isCam;
     
     float width, height;
-    C2D_TextGetDimensions(&c2dText, this->scale->x, this->scale->y, &width, &height);
+    C2D_TextGetDimensions(&c2dText, cam ? this->_scaleOrigin->x : this->scale->x, cam ? this->_scaleOrigin->y : this->scale->y, &width, &height);
     this->width = width;
     this->height = height;
 
@@ -72,6 +74,9 @@ enum abstract BorderStyle(Int) {
     var SHADOW;
 }
 
+/**
+ * Text Class for making, styling, and Making some useful modification for this text.
+ */
 class CitroText extends CitroObject {
     /**
      * The current text being displayed in screen.

@@ -1,7 +1,6 @@
 package citro.backend;
 
 import citro.object.CitroObject;
-import citro.object.CitroText;
 import citro.math.CitroMath;
 
 /**
@@ -43,7 +42,7 @@ class CitroCamera extends CitroObject {
      * Constructor for making the camera.
      * @param bottom Whetever or not the camera positions at the bottom.
      */
-    public function new(bottom:Bool) {
+    public function new(bottom:Bool = false) {
         super();
 
         bottomCam = bottom;
@@ -85,6 +84,8 @@ class CitroCamera extends CitroObject {
         final oldSY:Float = spr.scale.y;
         final oldA:Float = spr.alpha;
 
+        spr._isCam = true;
+        spr._scaleOrigin = spr.scale;
         spr.scale.x *= zoom;
         spr.scale.y *= zoom;
         spr.x = (oldX + curX - scX) * zoom + scX;
@@ -129,7 +130,7 @@ class CitroCamera extends CitroObject {
     }
 
     /**
-     * Will destroy every sprite from camera and clean memory, Only call this on `override function destroy` state function.
+     * Will destroy every sprite from camera and cleans memory, Only call this on `override function destroy` state function.
      */
     override function destroy() {
         super.destroy();

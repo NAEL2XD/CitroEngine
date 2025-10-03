@@ -89,6 +89,18 @@ class CitroObject {
     public var scale:CitroVector2D = new CitroVector2D();
 
     /**
+     * Scale origin like `scale` but necessary useful for cameras.
+     * 
+     * Useless for Sprite, Useful for text.
+     */
+    public var _scaleOrigin:CitroVector2D = new CitroVector2D();
+
+    /**
+     * Variable to check if it's rendering from a camera.
+     */
+    public var _isCam:Bool = false;
+
+    /**
      * Whetever or not if the sprite is currently visible or not.
      */
     public var visible:Bool = true;
@@ -121,7 +133,9 @@ class CitroObject {
     /**
      * This should not be used, if you want a usable version use `CitroSprite` or `CitroText`
      */
-    public function new() {};
+    public function new() {
+        _scaleOrigin = scale;
+    }
 
     /**
      * Destroys the current object and frees up memory.
