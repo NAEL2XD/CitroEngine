@@ -32,6 +32,7 @@ class CitroStartup extends CitroState {
                 destination: 0
             }], 0.7, CUBE_IN, () -> {
                 CitroTimer.start(0.1, () -> {
+                    coin.destroy();
                     CitroG.switchState(CitroInit.oldCS);
                     CitroInit.oldCS = null;
                 });

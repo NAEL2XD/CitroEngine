@@ -61,7 +61,10 @@ class CitroSound {
     /**
      * Creates a new Mixer Sound from file path and plays it for you.
      * 
-     * FFMPEG Command (required): `ffmpeg -i "input.wav" -ar 44100 -ac 1 -c:a libvorbis -b:a 96k "output.ogg"`
+     * ~~FFMPEG Command (required): `ffmpeg -i "input.wav" -ar 22050 -ac 1 -c:a libvorbis -b:a 96k "output.ogg"`~~
+     * 
+     * Requires Audacity for this one.
+     * 
      * @param file File path in romfs to use as, not required to use `romfs:/`
      */
     public function new(file:String) {
