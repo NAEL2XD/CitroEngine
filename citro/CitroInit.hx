@@ -135,7 +135,6 @@ class CitroInit {
         
         var deltaTime:Int = 16;
         while (APT.mainLoop() && !shouldQuit) {
-            HID.scanInput();
             final old:UInt64 = OS.time;
             rendered = 0;
 
