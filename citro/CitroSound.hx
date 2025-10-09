@@ -86,7 +86,7 @@ class CitroSound {
 
                 FILE* fh = fopen(path, "rb");
                 OggVorbis_File vf;
-                
+
                 ov_open(fh, &vf, nullptr, 0);
                 this->length = static_cast<int>(ov_time_total(&vf, -1));
                 ov_clear(&vf);
@@ -97,8 +97,6 @@ class CitroSound {
 
             this->filePath = std::string(path);
         ');
-
-        trace("waut");
     }
 
     /**
