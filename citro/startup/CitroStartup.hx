@@ -9,7 +9,7 @@ import citro.state.CitroState;
 
 class CitroStartup extends CitroState {
     var logo:CitroSprite = new CitroSprite();
-    var coin:CitroSound = new CitroSound("citro/coin.ogg");
+    var coin:CitroSound = new CitroSound("citro/coin.bcwav");
 
     override function create() {
         super.create();

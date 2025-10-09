@@ -156,28 +156,17 @@ class CitroSoundG {
     /**
      * Plays a sound fast without using CitroSound class, will automatically be stored to a map.
      * @param soundPath Sound Path found in romfs, don't include `romfs:/`.
-     * @param stopNow Should stop if sound is currently playing? **OPTIONAL**: false by default.
+     * @param stopNow Should stop if sound is currently playing?
      */
-    public function play(soundPath:String, stopNow:Bool = false) {
+    public function play(soundPath:String) {
         if (storedSounds.exists(soundPath)) {
-            storedSounds[soundPath].play(stopNow);
+            storedSounds[soundPath].play();
             return;
         }
 
         var snd:CitroSound = new CitroSound(soundPath);
         storedSounds.set(soundPath, snd);
         snd.play();
-    }
-
-    /**
-     * Stops a sound fast without using CitroSound class.
-     * 
-     * Will do nothing if it doesn't exist.
-     */
-    public function stop(soundPath:String) {
-        if (storedSounds.exists(soundPath)) {
-            storedSounds[soundPath].pause();
-        }
     }
 
     /**

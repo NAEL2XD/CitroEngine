@@ -9,7 +9,6 @@ import citro.state.CitroState;
 import haxe3ds.applet.Error;
 import haxe3ds.services.APT;
 import haxe3ds.services.HID;
-import haxe3ds.stdutil.FSUtil;
 import haxe3ds.OS;
 
 import cxx.num.UInt64;
@@ -19,8 +18,7 @@ using StringTools;
 @:headerCode("
 #include <citro2d.h>
 #include <citro3d.h>
-#include <SDL.h>
-#include <SDL_mixer.h>
+#include <cwav.h>
 
 extern C3D_RenderTarget* topScreen;
 extern C3D_RenderTarget* bottomScreen;
@@ -34,7 +32,7 @@ C3D_RenderTarget* topScreen = nullptr;
 C3D_RenderTarget* bottomScreen = nullptr;
 ')
 /**
- * Literally everything to set up.
+ * Literally everything to set up citro engine.
  */
 class CitroInit {
     /**
@@ -105,18 +103,10 @@ class CitroInit {
      * @param skipIntro Whetever or not you want to skip the Citro Intro. **OPTIONAL**: Intro will still be played anyway.
      * @param capacityLimit Whetever or not you want to set the current capacity limitation. **OPTIONAL**: Will be set to 400, be aware of exceptions if going higher!
      */
-    public static function init(state:CitroState, precacheAllSounds:Bool = false, skipIntro:Bool = false, capacityLimit:Int = 400) {
+    public static function init(state:CitroState, skipIntro:Bool = false, capacityLimit:Int = 400) {
         capacity = capacityLimit;
         curState = state;
         subState = null;
-
-        if (precacheAllSounds) {
-            for (files in FSUtil.readDirectory("romfs:/", true)) {
-                if (files.endsWith("ogg")) {
-                    CitroG.sound.precache(files.substr(7));
-                }
-            }
-        }
 
         if (!skipIntro) {
             oldCS = curState;
@@ -124,14 +114,14 @@ class CitroInit {
         }
 
         untyped __cpp__('
+            ndspInit();
+            cwavUseEnvironment(CWAV_ENV_DSP);
             C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
             C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
             C2D_Prepare();
 
             topScreen = C2D_CreateScreenTarget(GFX_TOP,    GFX_LEFT);
-            bottomScreen = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
-
-            srand(time(NULL))
+            bottomScreen = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT)
         ');
 
         !CitroG.isNotNull(curState) ? {
@@ -187,9 +177,7 @@ class CitroInit {
         untyped __cpp__('
 	        C3D_Fini();
 	        C2D_Fini();
-	        Mix_CloseAudio();
-	        Mix_Quit();
-	        SDL_Quit()
+            ndspExit()
 	    ');
     }
 }
