@@ -66,7 +66,7 @@ class CitroG {
      * Checks whetever if object is being touched/held in the bottom screen.
      * 
      * ### Note:
-     * Object's `render` must be `BOTTOM` or `BOTH`.
+     * Object's `render` must be `BOTTOM` or `BOTH`, if it's not that then it's gonna be returning `false`!
      * 
      * ### Warning:
      * If the object has a camera added instead of CitroState, it will cause inaccuracy!
@@ -75,7 +75,7 @@ class CitroG {
      * @return true if currently touching, false if not touching or not in bottom screen. Note that it always returns true if sprite's x and y is in 0 and in bottom, so i suggest you move to somewhere else.
      */
     public static function isTouching(obj:CitroObject):Bool {
-        if (obj.render != TOP || !obj.visible) {
+        if (obj.render == TOP || !obj.visible) {
             return false;
         }
 
