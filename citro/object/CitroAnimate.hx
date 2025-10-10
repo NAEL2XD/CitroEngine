@@ -36,17 +36,19 @@ class CitroAnimate extends CitroObject {
     /**
      * Constructs this sprite.
      * @param craFile Path to the `.cea` (Citro Engine Animate) file to parse, `romfs:/` included.
+     * @param defaultAnim The default animation that's going to be used.
      */
-    public function new(ceaFile:String) {
+    public function new(ceaFile:String, defaultAnim:String = "idle") {
         super();
 
-        var file = FSUtil.readFile('romfs:/${ceaFile}');
+        final file = FSUtil.readFile('romfs:/${ceaFile}');
         ceaFile = ceaFile.substr(0, ceaFile.lastIndexOf("/"));
         if (file != "") {
             var i:Int = 0;
             var old:Array<String> = [];
-            for (line in file.split("\n")) {
+            for (j => line in file.split("\n")) {
                 var row = line.split("?");
+                if (row.length < 3) break;
                 row[3] = row[3].trim();
 
                 if (!old.join(" ").contains(row[3])) {
@@ -64,6 +66,8 @@ class CitroAnimate extends CitroObject {
                 });
             }
         }
+
+        play(defaultAnim);
     }
 
     /**
@@ -71,11 +75,16 @@ class CitroAnimate extends CitroObject {
      * @param animation Animation name to play.
      */
     public function play(animation:String):Bool {
+        if (isDestroyed) {
+            return false;
+        }
+        
         var old = frame;
         frame = 0;
 
         for (key in sprites.keys()) {
             if (key == '${animation}-0') {
+                timeLeft = Std.int(1000 / fps);
                 animPlay = animation;
                 return true;
             }
@@ -85,23 +94,41 @@ class CitroAnimate extends CitroObject {
         return false;
     }
 
+    function format() {
+        return '${animPlay}-$frame';
+    }
+
     override function update(delta:Int):Bool {
+        if (isDestroyed) {
+            return false;
+        }
+
         timeLeft -= delta;
         if (timeLeft < 1) {
             timeLeft = Std.int(1000 / fps);
             frame++;
-            if (!sprites.exists('${animPlay}-$frame')) {
+            if (!sprites.exists(format())) {
                 frame--;
+            } else {
+                var header = sprites.get(format()).sprite;
+                width = header.width;
+                height = header.height;
             }
         }
 
-        if (sprites.exists('${animPlay}-$frame')) {
-            var header = sprites.get('${animPlay}-$frame');
-            header.sprite.x = x - (header.frameX * scale.x);
-            header.sprite.y = y - (header.frameY * scale.y);
-            header.sprite.scale.x = scale.x;
-            header.sprite.scale.y = scale.y;
-            return header.sprite.update(delta);
+        if (sprites.exists(format()) && visible) {
+            var header = sprites.get(format());
+            var sprite = header.sprite;
+            sprite.acceleration = acceleration;
+            sprite.alpha  = alpha;
+            sprite.angle  = angle;
+            sprite.bottom = bottom;
+            sprite.color  = color;
+            sprite.factor = factor;
+            sprite.scale  = scale;
+            sprite.x = x - (header.frameX * scale.x);
+            sprite.y = y - (header.frameY * scale.y);
+            return sprite.update(delta);
         }
 
         return false;
@@ -113,5 +140,6 @@ class CitroAnimate extends CitroObject {
         }
 
         super.destroy();
+        sprites = null;
     }
 }
