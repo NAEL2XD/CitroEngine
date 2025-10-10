@@ -151,14 +151,16 @@ class CitroText extends CitroObject {
             return false;
         }
 
+        final bottom = render == BOTTOM;
+
         untyped __cpp__('
             C2D_Text c2dText = createText();
 
             float newX = this->x, sw = this->scale->x, sh = this->scale->y;
             switch (this->alignment) {
                 case 0: break;
-                case 1: newX += this->bottom ? (320 - this->width) / 2 : (400 - this->width) / 2; break;
-                case 2: newX += this->bottom ? 320 - this->width : 400 - this->width; break;
+                case 1: newX += bottom ? (320 - this->width) / 2 : (400 - this->width) / 2; break;
+                case 2: newX += bottom ? 320 - this->width : 400 - this->width; break;
             }
 
             C2D_ViewSave(&this->matrix);

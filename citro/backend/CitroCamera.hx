@@ -54,6 +54,7 @@ class CitroCamera extends CitroObject {
         
         curX = CitroMath.lerp(curX, x, lerp);
         curY = CitroMath.lerp(curY, y, lerp);
+        render = bottomCam ? BOTTOM : TOP;
         
         untyped __cpp__("C2D_SceneBegin(this->bottomCam ? bottomScreen : topScreen)");
         for (spr in members) {
@@ -62,7 +63,7 @@ class CitroCamera extends CitroObject {
                 continue;
             }
 
-            render(spr, delta);
+            renderObj(spr, delta);
         }
 
         return true;
@@ -73,7 +74,7 @@ class CitroCamera extends CitroObject {
      * @param spr Sprite to use to render as, has error handling!
      * @param delta Delta to use (needed for sprite's update time)
      */
-    public function render(spr:CitroObject, delta:Int) {
+    public function renderObj(spr:CitroObject, delta:Int) {
         if (!CitroG.isNotNull(spr)) {
             return;
         }

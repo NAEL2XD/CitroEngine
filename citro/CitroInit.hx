@@ -91,8 +91,17 @@ class CitroInit {
                 break;
             }
 
-            untyped __cpp__("C2D_SceneBegin(member->bottom ? bottomScreen : topScreen)");
-            member.update(delta); // nvm it killed rendering :(
+            untyped __cpp__("C2D_SceneBegin(member->render->index == 1 ? bottomScreen : topScreen)");
+            member.update(delta);
+
+            if (member.render == BOTH) {
+                untyped __cpp__("C2D_SceneBegin(bottomScreen)");
+                member.x -= 39.8;
+                member.y -= 240;
+                member.update(delta);
+                member.x += 39.8;
+                member.y += 240;
+            }
         }
     }
     

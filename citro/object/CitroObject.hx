@@ -6,6 +6,23 @@ enum Axes {
     X; Y; XY;
 }
 
+enum CitroRenderType {
+    /**
+     * Renders on the top screen.
+     */
+    TOP;
+
+    /**
+     * Renders on the bottom screen.
+     */
+    BOTTOM;
+
+    /**
+     * Both renders in both screens.
+     */
+    BOTH;
+}
+
 typedef CitroAcceleration = {
     /**
      * The current X's acceleration.
@@ -64,9 +81,11 @@ class CitroObject {
     public var angle:Float = 0;
 
     /**
-     * Whetever or not you want it to show in the bottom screen.
+     * Render Type to Use.
+     * 
+     * If from a camera, this will do nothing and is only specified by the camera's rendering type.
      */
-    public var bottom:Bool = false;
+    public var render:CitroRenderType = TOP;
 
     /**
      * Hex color in 0xAARRGGBB.
@@ -163,7 +182,7 @@ class CitroObject {
      */
     public function screenCenter(pos:Axes = XY) {
         final newW:Float = width * scale.x;
-        final newX:Float = bottom ? (320 - newW) / 2 : (400 - newW) / 2;
+        final newX:Float = render == BOTTOM ? (320 - newW) / 2 : (400 - newW) / 2;
         final newY:Float = (240 - (height * scale.y)) / 2;
 
         switch(pos) {
@@ -182,6 +201,6 @@ class CitroObject {
             return false;
         }
 
-        return !(x + (width * scale.x) < 0 || x > (bottom ? 320 : 400) || y + (height * scale.y) < 0 || y > 240);
+        return !(x + (width * scale.x) < 0 || x > (render == BOTTOM ? 320 : 400) || y + (height * scale.y) < 0 || y > 240);
     }
 }

@@ -31,14 +31,24 @@ class CitroAnimate extends CitroObject {
     /**
      * The current playing animation name that's gonna be used.
      */
-    public var animPlay:String = "";
+    public var curAnim:String = "";
+
+    /**
+     * Whetever or not the animation that's currently playing has finished.
+     */
+    public var finished:Bool = false;
+
+    /**
+     * Whetever or not it should loop the entire animation when finished.
+     */
+    public var looped:Bool = false;
 
     /**
      * Constructs this sprite.
      * @param craFile Path to the `.cea` (Citro Engine Animate) file to parse, `romfs:/` included.
-     * @param defaultAnim The default animation that's going to be used.
+     * @param defaultAnim The default animation that's going to be used, if `""` then uses the first animation that was parsed.
      */
-    public function new(ceaFile:String, defaultAnim:String = "idle") {
+    public function new(ceaFile:String, defaultAnim:String = "") {
         super();
 
         final file = FSUtil.readFile('romfs:/${ceaFile}');
@@ -46,7 +56,7 @@ class CitroAnimate extends CitroObject {
         if (file != "") {
             var i:Int = 0;
             var old:Array<String> = [];
-            for (j => line in file.split("\n")) {
+            for (line in file.split("\n")) {
                 var row = line.split("?");
                 if (row.length < 3) break;
                 row[3] = row[3].trim();
@@ -57,13 +67,24 @@ class CitroAnimate extends CitroObject {
                 }
                 i++;
 
+                final n = '${row[3]}-$i';
+
                 var sprite = new CitroSprite();
-                sprite.loadGraphic('$ceaFile/${row[0]}');
-                sprites.set('${row[3]}-$i', {
+                if (!sprite.loadGraphic('$ceaFile/${row[0]}')) {
+                    i--;
+                    sprite.destroy();
+                    continue;
+                }
+
+                sprites.set(n, {
                     frameX: Std.parseFloat(row[1]),
                     frameY: Std.parseFloat(row[2]),
                     sprite: sprite
                 });
+
+                if (defaultAnim == "") {
+                    defaultAnim = n.substr(0, n.length-2);
+                }
             }
         }
 
@@ -85,7 +106,13 @@ class CitroAnimate extends CitroObject {
         for (key in sprites.keys()) {
             if (key == '${animation}-0') {
                 timeLeft = Std.int(1000 / fps);
-                animPlay = animation;
+                curAnim = animation;
+                finished = false;
+
+                var spr = sprites[key].sprite;
+                width  = spr.width;
+                height = spr.height;
+
                 return true;
             }
         }
@@ -95,20 +122,30 @@ class CitroAnimate extends CitroObject {
     }
 
     function format() {
-        return '${animPlay}-$frame';
+        return '${curAnim}-$frame';
     }
 
+    var RnB:Bool = false;
     override function update(delta:Int):Bool {
         if (isDestroyed) {
             return false;
         }
 
-        timeLeft -= delta;
+        if (RnB) {
+            timeLeft -= delta;
+        }
+
+        RnB = false;
         if (timeLeft < 1) {
             timeLeft = Std.int(1000 / fps);
             frame++;
             if (!sprites.exists(format())) {
-                frame--;
+                if (finished = true && looped) {
+                    finished = false;
+                    play(curAnim);
+                } else {
+                    frame--;
+                }
             } else {
                 var header = sprites.get(format()).sprite;
                 width = header.width;
@@ -122,12 +159,17 @@ class CitroAnimate extends CitroObject {
             sprite.acceleration = acceleration;
             sprite.alpha  = alpha;
             sprite.angle  = angle;
-            sprite.bottom = bottom;
+            sprite.render = render;
             sprite.color  = color;
             sprite.factor = factor;
             sprite.scale  = scale;
             sprite.x = x - (header.frameX * scale.x);
             sprite.y = y - (header.frameY * scale.y);
+
+            if (render == BOTH) {
+                RnB = true;
+            }
+
             return sprite.update(delta);
         }
 

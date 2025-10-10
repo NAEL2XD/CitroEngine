@@ -18,7 +18,7 @@ class CitroSubState extends CitroState {
         for (i in 0...2) {
             var col:CitroSprite = new CitroSprite();
             col.makeGraphic(400, 240, color);
-            col.bottom = i == 1;
+            col.render = i == 1 ? TOP : BOTTOM;
             add(col);
         }
     }
