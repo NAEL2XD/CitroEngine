@@ -24,11 +24,6 @@ import cxx.num.UInt64;
 ')
 class CitroSound {
     /**
-     * Current length of this sound.
-     */
-    public var length(default, null):Int = 0;
-
-    /**
      * Current file path read.
      */
     public var filePath(default, null):String;
@@ -68,7 +63,7 @@ class CitroSound {
      * 
      * ~~Requires Audacity for this one.~~
      * 
-     * You will need to have `cwavtool` downloaded from https://github.com/PabloMK7/cwavtool and both cwav and ncsnd installed
+     * You will need to have `cwavtool` downloaded from https://github.com/PabloMK7/cwavtool and both cwav and ncsnd installed.
      * 
      * @param file File path in romfs to use as, not required to use `romfs:/`, must be as a `bcwav` extension.
      */
@@ -83,14 +78,6 @@ class CitroSound {
 
             if (cwav->loadStatus == CWAV_SUCCESS) {
                 canPlay = true;
-
-                FILE* fh = fopen(path, "rb");
-                OggVorbis_File vf;
-
-                ov_open(fh, &vf, nullptr, 0);
-                this->length = static_cast<int>(ov_time_total(&vf, -1));
-                ov_clear(&vf);
-                fclose(fh);
             } else {
                 cwavFileFree(cwav);
             }
